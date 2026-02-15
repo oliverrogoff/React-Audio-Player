@@ -7,7 +7,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.js"
-    }
+    },
+    "./dist/audio-player.css": "./dist/audio-player.css"
   },
   "types": "./dist/index.d.ts",
   "peerDependencies": {
