@@ -2,17 +2,23 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  publicDir: false,
+  publicDir: false, // don’t copy public/
   plugins: [react()],
   build: {
     lib: {
       entry: "src/index.ts",
       name: "AudioPlayer",
       fileName: "index",
-      formats: ["es"]
+      formats: ["es"] // ONLY ES modules
     },
     rolldownOptions: {
-      external: ["react", "react-dom"]
+      external: ["react", "react-dom"], // don’t bundle React
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM"
+        }
+      }
     }
   }
 });
