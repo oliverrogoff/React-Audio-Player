@@ -13,15 +13,7 @@ export type Song = {
 export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [shouldPlayOnLoad, setShouldPlayOnLoad] = useState<boolean>(false);
-    // Initialize currentSong with lazy initializer - only runs once
-    const [currentSong, setCurrentSong] = useState<Song | null>(() => {
-        const savedId = sessionStorage.getItem('currentSongId');
-        if (savedId) {
-            const savedSong = playlist.find((song: Song) => song.id === Number(savedId));
-            if (savedSong) return savedSong;
-        }
-        return playlist[0] || null;
-    });
+    const [currentSong, setCurrentSong] = useState<Song | null>(playlist[0] || null);
     const [currentTime, setCurrentTime] = useState<number>(0);
     const [volume, setVolume] = useState<number>(1);
     const [durations, setDurations] = useState<Record<number, string>>({});
@@ -189,6 +181,19 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
             audioElement.removeEventListener('ended', handleEnded);
         };
     }, [currentSong, next, shouldPlayOnLoad]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return; // SSR safety
+
+        const savedId = sessionStorage.getItem('currentSongId');
+        if (savedId) {
+            const savedSong = playlist.find(song => song.id === Number(savedId));
+            if (savedSong) {
+                // eslint-disable-next-line
+                setCurrentSong(savedSong);
+            }
+        }
+    }, [playlist]); // run only once
 
     useEffect(() => {
         playlist.forEach((song) => {
