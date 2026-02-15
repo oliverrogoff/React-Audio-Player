@@ -1,4 +1,3 @@
-import './App.css'
 import AudioPlayer, {type Song} from './AudioPlayer';
 
 function getPlaylist(): Song[] {
@@ -8,8 +7,8 @@ function getPlaylist(): Song[] {
             id: i + 1,
             title: "Song "  + String(i + 1),
             artist: "Artist "  + String(i + 1),
-            src: "music/song" + String(i + 1) + ".mp3",
-            cover: "covers/cover" + String(i + 1) + ".png"
+            src: "/music/song" + String(i + 1) + ".mp3",
+            cover: "/covers/cover" + String(i + 1) + ".png"
         }
         playlist.push(song);
     }
@@ -17,10 +16,14 @@ function getPlaylist(): Song[] {
 }
 
 
-
 function App() {
     return (
-        <>
+        <div style={{
+            maxWidth: "1280px",
+            margin: "0 auto",
+            padding: "2rem",
+            textBox: "center"
+        }}>
             <div
                 className={"audio-player-wrapper"}
                 style={{
@@ -35,7 +38,7 @@ function App() {
             >
                 <AudioPlayer playlist={getPlaylist()} />
             </div>
-        </>
+        </div>
     )
 }
 

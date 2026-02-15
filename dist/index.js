@@ -1,349 +1,305 @@
-import { useCallback as e, useEffect as t, useMemo as n, useRef as r, useState as i } from "react";
-import { Fragment as a, jsx as o, jsxs as s } from "react/jsx-runtime";
-var c = {
-	wrapper: "_wrapper_uuosx_4",
-	spacer: "_spacer_uuosx_24",
-	current: "_current_uuosx_28",
-	currentControls: "_currentControls_uuosx_36",
-	controlBtn: "_controlBtn_uuosx_44",
-	"material-icons": "_material-icons_uuosx_45",
-	"material-icons-round": "_material-icons-round_uuosx_46",
-	musicImage: "_musicImage_uuosx_50",
-	musicTitles: "_musicTitles_uuosx_62",
-	songName: "_songName_uuosx_62",
-	artistName: "_artistName_uuosx_68",
-	progressDetails: "_progressDetails_uuosx_75",
-	progressBar: "_progressBar_uuosx_97",
-	progressTooltip: "_progressTooltip_uuosx_121",
-	time: "_time_uuosx_135",
-	centeredButtons: "_centeredButtons_uuosx_152",
-	playPause: "_playPause_uuosx_170",
-	volumeContainer: "_volumeContainer_uuosx_174",
-	volumeSlider: "_volumeSlider_uuosx_187",
-	hoverArea: "_hoverArea_uuosx_202",
-	playlistScroll: "_playlistScroll_uuosx_222",
-	playlistScrollItem: "_playlistScrollItem_uuosx_238",
-	miniCover: "_miniCover_uuosx_245",
-	overlay: "_overlay_uuosx_256",
-	playOverlay: "_playOverlay_uuosx_260",
-	playlistTextContainer: "_playlistTextContainer_uuosx_287",
-	song: "_song_uuosx_62",
-	artist: "_artist_uuosx_68",
-	playlistSongLength: "_playlistSongLength_uuosx_307",
-	mainSong: "_mainSong_uuosx_316"
+import { jsx as r, Fragment as Y, jsxs as l } from "react/jsx-runtime";
+import { useState as m, useRef as R, useMemo as Z, useCallback as y, useEffect as h } from "react";
+const ee = "_wrapper_uuosx_4", ne = "_spacer_uuosx_24", te = "_current_uuosx_28", re = "_currentControls_uuosx_36", oe = "_controlBtn_uuosx_44", se = "_musicImage_uuosx_50", ae = "_musicTitles_uuosx_62", ie = "_songName_uuosx_62", ce = "_artistName_uuosx_68", le = "_progressDetails_uuosx_75", ue = "_progressBar_uuosx_97", de = "_progressTooltip_uuosx_121", me = "_time_uuosx_135", ve = "_centeredButtons_uuosx_152", pe = "_playPause_uuosx_170", he = "_volumeContainer_uuosx_174", _e = "_volumeSlider_uuosx_187", fe = "_hoverArea_uuosx_202", ge = "_playlistScroll_uuosx_222", we = "_playlistScrollItem_uuosx_238", Ne = "_miniCover_uuosx_245", Se = "_overlay_uuosx_256", ye = "_playOverlay_uuosx_260", xe = "_playlistTextContainer_uuosx_287", Ee = "_song_uuosx_62", Le = "_artist_uuosx_68", Ce = "_playlistSongLength_uuosx_307", Te = "_mainSong_uuosx_316", t = {
+  wrapper: ee,
+  spacer: ne,
+  current: te,
+  currentControls: re,
+  controlBtn: oe,
+  musicImage: se,
+  musicTitles: ae,
+  songName: ie,
+  artistName: ce,
+  progressDetails: le,
+  progressBar: ue,
+  progressTooltip: de,
+  time: me,
+  centeredButtons: ve,
+  playPause: pe,
+  volumeContainer: he,
+  volumeSlider: _e,
+  hoverArea: fe,
+  playlistScroll: ge,
+  playlistScrollItem: we,
+  miniCover: Ne,
+  overlay: Se,
+  playOverlay: ye,
+  playlistTextContainer: xe,
+  song: Ee,
+  artist: Le,
+  playlistSongLength: Ce,
+  mainSong: Te
 };
-function l({ playlist: l }) {
-	let [f, p] = i(!1), [m, h] = i(!1), [g, _] = i(l[0] || null), [v, y] = i(0), [b, x] = i(1), [S, C] = i({}), [w, T] = i(!1), [E, D] = i(null), [O, k] = i(null), A = r(null), j = r(null), M = f ? "pause" : "play_arrow", [N, P] = i(0), F = n(() => N ? v / N * 100 : 0, [v, N]);
-	function I(e) {
-		let t = parseFloat(e.target.value);
-		x(t), A.current && (A.current.volume = t);
-	}
-	function L(e, t = !1) {
-		A.current && (A.current.pause(), y(0)), t && h(!0), _(e);
-	}
-	function R(e) {
-		A.current && (A.current.currentTime = e), y(e);
-	}
-	let z = e((e) => {
-		if (!A.current || !j.current) return;
-		let t = j.current.getBoundingClientRect(), n = e.clientX - t.left, r = Math.min(Math.max(n / t.width, 0), 1) * A.current.duration;
-		R(r), k(n), D(String(r));
-	}, []), B = e((e) => {
-		if (!A.current?.duration || !j.current) return;
-		let t = j.current.getBoundingClientRect(), n = (e.clientX - t.left) / t.width, r = A.current.duration * n;
-		k(e.clientX - t.left), D(d(r));
-	}, []);
-	function V() {
-		A.current?.play();
-	}
-	function H() {
-		A.current?.pause();
-	}
-	let U = e(() => {
-		f ? H() : V();
-	}, [f]);
-	function W() {
-		T(!0);
-	}
-	function G(e) {
-		w ? z(e) : B(e);
-	}
-	function K(e) {
-		T(!0), z(e.touches[0]);
-	}
-	function q() {
-		D(null), k(null);
-	}
-	let J = e((e = !1) => {
-		if (g && l.length > 0) {
-			let t = l.findIndex((e) => e.id === g.id);
-			t >= 0 && (t = (t + 1) % l.length, L(l[t], f || e));
-		}
-	}, [
-		g,
-		f,
-		l
-	]);
-	function Y() {
-		if (g && l.length > 0) {
-			let e = l.findIndex((e) => e.id === g.id);
-			e >= 0 && (e = (e - 1 + l.length) % l.length, L(l[e], f));
-		}
-	}
-	return t(() => {
-		let e = A.current;
-		if (!e || !g) return;
-		g.id && sessionStorage.setItem("currentSongId", String(g.id));
-		let t = () => J(!0), n = () => {
-			let t = e.currentTime;
-			y(t);
-		}, r = () => {
-			e.src.includes(g.src) && m && e.paused && (e.play().catch((e) => {
-				console.warn("Playback failed:", e);
-			}), h(!1));
-		};
-		return e.addEventListener("loadeddata", r), e.addEventListener("timeupdate", n), e.addEventListener("ended", t), () => {
-			e.removeEventListener("loadeddata", r), e.removeEventListener("timeupdate", n), e.removeEventListener("ended", t);
-		};
-	}, [
-		g,
-		J,
-		m
-	]), t(() => {
-		if (typeof window > "u") return;
-		let e = sessionStorage.getItem("currentSongId");
-		if (e) {
-			let t = l.find((t) => t.id === Number(e));
-			t && _(t);
-		}
-	}, [l]), t(() => {
-		l.forEach((e) => {
-			e?.src && u(e.src).then((t) => {
-				C((n) => ({
-					...n,
-					[e.id]: t
-				}));
-			});
-		});
-	}, [l]), t(() => {
-		function e(e) {
-			w ? z(e) : B(e);
-		}
-		function t(e) {
-			w && z(e.touches[0]);
-		}
-		function n() {
-			w && T(!1);
-		}
-		function r() {
-			w && T(!1);
-		}
-		return w ? (window.addEventListener("mousemove", e), window.addEventListener("mouseup", n), window.addEventListener("touchmove", t), window.addEventListener("touchend", r)) : (window.removeEventListener("mousemove", e), window.removeEventListener("mouseup", n), window.removeEventListener("touchmove", t), window.removeEventListener("touchend", r)), () => {
-			window.removeEventListener("mousemove", e), window.removeEventListener("mouseup", n), window.removeEventListener("touchmove", t), window.removeEventListener("touchend", r);
-		};
-	}, [
-		w,
-		z,
-		B
-	]), t(() => {
-		A.current && (A.current.volume = b);
-	}, [b]), t(() => {
-		let e = (e) => {
-			document.activeElement && e.code === "Space" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName) && (e.preventDefault(), U());
-		};
-		return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
-	}, [f, U]), t(() => {
-		let e = A.current;
-		if (!e || !g) return;
-		let t = () => {
-			P(e.duration);
-		};
-		return e.addEventListener("loadedmetadata", t), () => {
-			e.removeEventListener("loadedmetadata", t);
-		};
-	}, [
-		g,
-		J,
-		m
-	]), t(() => {
-		let e = A.current;
-		if (!e) return;
-		let t = () => {
-			p(!e.paused);
-		};
-		return e.addEventListener("play", t), e.addEventListener("pause", t), e.addEventListener("ended", t), () => {
-			e.removeEventListener("play", t), e.removeEventListener("pause", t), e.removeEventListener("ended", t);
-		};
-	}, []), /* @__PURE__ */ o(a, { children: /* @__PURE__ */ s("div", {
-		className: c.wrapper,
-		children: [
-			/* @__PURE__ */ s("div", {
-				className: c.current,
-				children: [/* @__PURE__ */ o("div", {
-					className: c.imageWrapper,
-					children: /* @__PURE__ */ o("div", {
-						className: c.musicImage,
-						children: g?.cover && /* @__PURE__ */ o("img", {
-							src: g.cover,
-							alt: "Album cover art"
-						})
-					})
-				}), /* @__PURE__ */ s("div", {
-					className: c.currentControls,
-					children: [
-						/* @__PURE__ */ s("div", {
-							className: c.musicTitles,
-							children: [/* @__PURE__ */ o("div", {
-								className: c.songName,
-								children: g?.title || ""
-							}), /* @__PURE__ */ o("div", {
-								className: c.artistName,
-								children: g?.artist || ""
-							})]
-						}),
-						/* @__PURE__ */ o("div", { className: c.spacer }),
-						/* @__PURE__ */ s("div", {
-							className: c.time,
-							children: [/* @__PURE__ */ o("span", {
-								className: c.currentTime,
-								children: d(v)
-							}), /* @__PURE__ */ o("span", {
-								className: c.finalTime,
-								children: g ? S[g.id] : ""
-							})]
-						}),
-						/* @__PURE__ */ s("div", {
-							className: c.progressDetails,
-							ref: j,
-							onMouseDown: W,
-							onTouchStart: K,
-							onMouseMove: G,
-							onMouseLeave: q,
-							onClick: (e) => {
-								let t = A.current;
-								if (!t) return;
-								let n = e.currentTarget.getBoundingClientRect();
-								R((e.clientX - n.left) / n.width * t.duration);
-							},
-							children: [/* @__PURE__ */ o("div", {
-								className: c.progressBar,
-								style: { width: F + "%" },
-								children: /* @__PURE__ */ o("span", {})
-							}), E !== null && (w || O !== null) && /* @__PURE__ */ o("div", {
-								className: c.progressTooltip,
-								style: { left: O ?? 0 },
-								children: E
-							})]
-						}),
-						/* @__PURE__ */ s("div", {
-							className: c.controlBtn,
-							children: [/* @__PURE__ */ s("div", {
-								className: c.centeredButtons,
-								children: [
-									/* @__PURE__ */ o("span", {
-										className: "material-icons-round",
-										onClick: Y,
-										children: "skip_previous"
-									}),
-									/* @__PURE__ */ o("div", {
-										className: c.playPause,
-										children: /* @__PURE__ */ o("span", {
-											className: "material-icons-round",
-											onClick: U,
-											children: M
-										})
-									}),
-									/* @__PURE__ */ o("span", {
-										className: "material-icons-round",
-										onClick: () => J(),
-										children: "skip_next"
-									})
-								]
-							}), /* @__PURE__ */ s("div", {
-								className: c.volumeContainer,
-								children: [
-									/* @__PURE__ */ o("span", {
-										className: "material-icons-round",
-										id: "volume",
-										children: "volume_up"
-									}),
-									/* @__PURE__ */ o("div", { className: c.hoverArea }),
-									/* @__PURE__ */ o("input", {
-										type: "range",
-										className: c.volumeSlider,
-										id: "volumeSlider",
-										min: "0",
-										max: "1",
-										step: "0.01",
-										value: b,
-										onChange: I
-									})
-								]
-							})]
-						})
-					]
-				})]
-			}),
-			/* @__PURE__ */ o("div", {
-				className: c.playlistScroll,
-				children: /* @__PURE__ */ o("ul", { children: l.map((e) => /* @__PURE__ */ s("li", {
-					className: c.playlistScrollItem,
-					onClick: () => {
-						g && (e.id === g.id ? U() : L(e, !0));
-					},
-					children: [
-						/* @__PURE__ */ s("div", {
-							className: c.miniCover,
-							children: [
-								e.cover && /* @__PURE__ */ o("img", {
-									src: e.cover,
-									alt: `${e.title} cover`
-								}),
-								/* @__PURE__ */ o("div", { className: c.overlay }),
-								/* @__PURE__ */ o("span", {
-									className: "material-icons-round " + c.playOverlay,
-									children: "play_arrow"
-								})
-							]
-						}),
-						/* @__PURE__ */ s("div", {
-							className: c.playlistTextContainer,
-							children: [/* @__PURE__ */ o("span", {
-								className: c.song,
-								children: e.title
-							}), /* @__PURE__ */ o("span", {
-								className: c.artist,
-								children: e.artist
-							})]
-						}),
-						/* @__PURE__ */ o("div", { className: c.spacer }),
-						/* @__PURE__ */ o("span", {
-							className: c.playlistSongLength,
-							children: S[e.id] || "loading..."
-						})
-					]
-				}, e.id)) })
-			}),
-			/* @__PURE__ */ o("audio", {
-				ref: A,
-				className: c.mainSong,
-				src: g?.src,
-				preload: "auto"
-			})
-		]
-	}) });
+function Pe({ playlist: o }) {
+  const [u, v] = m(!1), [_, k] = m(!1), [s, D] = m(o[0] || null), [x, E] = m(0), [L, H] = m(1), [b, U] = m({}), [p, w] = m(!1), [X, C] = m(null), [A, T] = m(null), i = R(null), f = R(null), V = u ? "pause" : "play_arrow", [I, j] = m(0), F = Z(() => I ? x / I * 100 : 0, [x, I]);
+  function K(e) {
+    const n = parseFloat(e.target.value);
+    H(n), i.current && (i.current.volume = n);
+  }
+  function M(e, n = !1) {
+    i.current && (i.current.pause(), E(0)), n && k(!0), D(e);
+  }
+  function O(e) {
+    i.current && (i.current.currentTime = e), E(e);
+  }
+  const g = y(
+    (e) => {
+      if (!i.current || !f.current) return;
+      const n = f.current.getBoundingClientRect(), a = e.clientX - n.left, c = Math.min(Math.max(a / n.width, 0), 1) * i.current.duration;
+      O(c), T(a), C(String(c));
+    },
+    []
+  ), B = y((e) => {
+    if (!i.current?.duration || !f.current) return;
+    const n = f.current.getBoundingClientRect(), a = (e.clientX - n.left) / n.width, d = i.current.duration * a;
+    T(e.clientX - n.left), C(P(d));
+  }, []);
+  function W() {
+    i.current?.play();
+  }
+  function $() {
+    i.current?.pause();
+  }
+  const N = y(() => {
+    u ? $() : W();
+  }, [u]);
+  function q() {
+    w(!0);
+  }
+  function z(e) {
+    p ? g(e) : B(e);
+  }
+  function G(e) {
+    w(!0), g(e.touches[0]);
+  }
+  function J() {
+    C(null), T(null);
+  }
+  const S = y((e = !1) => {
+    if (s && o.length > 0) {
+      let n = o.findIndex((a) => a.id === s.id);
+      n >= 0 && (n = (n + 1) % o.length, M(o[n], u || e));
+    }
+  }, [s, u, o]);
+  function Q() {
+    if (s && o.length > 0) {
+      let e = o.findIndex((n) => n.id === s.id);
+      e >= 0 && (e = (e - 1 + o.length) % o.length, M(o[e], u));
+    }
+  }
+  return h(() => {
+    const e = i.current;
+    if (!e || !s) return;
+    s.id && sessionStorage.setItem("currentSongId", String(s.id));
+    const n = () => S(!0), a = () => {
+      const c = e.currentTime;
+      E(c);
+    }, d = () => {
+      e.src.includes(s.src) && _ && e.paused && (e.play().catch((c) => {
+        console.warn("Playback failed:", c);
+      }), k(!1));
+    };
+    return e.addEventListener("loadeddata", d), e.addEventListener("timeupdate", a), e.addEventListener("ended", n), () => {
+      e.removeEventListener("loadeddata", d), e.removeEventListener("timeupdate", a), e.removeEventListener("ended", n);
+    };
+  }, [s, S, _]), h(() => {
+    if (typeof window > "u") return;
+    const e = sessionStorage.getItem("currentSongId");
+    if (e) {
+      const n = o.find((a) => a.id === Number(e));
+      n && D(n);
+    }
+  }, [o]), h(() => {
+    o.forEach((e) => {
+      e?.src && Ie(e.src).then((n) => {
+        U((a) => ({
+          ...a,
+          [e.id]: n
+        }));
+      });
+    });
+  }, [o]), h(() => {
+    function e(c) {
+      p ? g(c) : B(c);
+    }
+    function n(c) {
+      p && g(c.touches[0]);
+    }
+    function a() {
+      p && w(!1);
+    }
+    function d() {
+      p && w(!1);
+    }
+    return p ? (window.addEventListener("mousemove", e), window.addEventListener("mouseup", a), window.addEventListener("touchmove", n), window.addEventListener("touchend", d)) : (window.removeEventListener("mousemove", e), window.removeEventListener("mouseup", a), window.removeEventListener("touchmove", n), window.removeEventListener("touchend", d)), () => {
+      window.removeEventListener("mousemove", e), window.removeEventListener("mouseup", a), window.removeEventListener("touchmove", n), window.removeEventListener("touchend", d);
+    };
+  }, [p, g, B]), h(() => {
+    i.current && (i.current.volume = L);
+  }, [L]), h(() => {
+    const e = (n) => {
+      document.activeElement && n.code === "Space" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName) && (n.preventDefault(), N());
+    };
+    return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
+  }, [u, N]), h(() => {
+    const e = i.current;
+    if (!e || !s) return;
+    const n = () => {
+      j(e.duration);
+    };
+    return e.addEventListener("loadedmetadata", n), () => {
+      e.removeEventListener("loadedmetadata", n);
+    };
+  }, [s, S, _]), h(() => {
+    const e = i.current;
+    if (!e) return;
+    const n = () => {
+      v(!e.paused);
+    };
+    return e.addEventListener("play", n), e.addEventListener("pause", n), e.addEventListener("ended", n), () => {
+      e.removeEventListener("play", n), e.removeEventListener("pause", n), e.removeEventListener("ended", n);
+    };
+  }, []), /* @__PURE__ */ r(Y, { children: /* @__PURE__ */ l("div", { className: t.wrapper, children: [
+    /* @__PURE__ */ l("div", { className: t.current, children: [
+      /* @__PURE__ */ r("div", { className: t.imageWrapper, children: /* @__PURE__ */ r("div", { className: t.musicImage, children: s?.cover && /* @__PURE__ */ r(
+        "img",
+        {
+          src: s.cover,
+          alt: "Album cover art"
+        }
+      ) }) }),
+      /* @__PURE__ */ l("div", { className: t.currentControls, children: [
+        /* @__PURE__ */ l("div", { className: t.musicTitles, children: [
+          /* @__PURE__ */ r("div", { className: t.songName, children: s?.title || "" }),
+          /* @__PURE__ */ r("div", { className: t.artistName, children: s?.artist || "" })
+        ] }),
+        /* @__PURE__ */ r("div", { className: t.spacer }),
+        /* @__PURE__ */ l("div", { className: t.time, children: [
+          /* @__PURE__ */ r("span", { className: t.currentTime, children: P(x) }),
+          /* @__PURE__ */ r("span", { className: t.finalTime, children: s ? b[s.id] : "" })
+        ] }),
+        /* @__PURE__ */ l(
+          "div",
+          {
+            className: t.progressDetails,
+            ref: f,
+            onMouseDown: q,
+            onTouchStart: G,
+            onMouseMove: z,
+            onMouseLeave: J,
+            onClick: (e) => {
+              const n = i.current;
+              if (!n) return;
+              const a = e.currentTarget.getBoundingClientRect(), c = (e.clientX - a.left) / a.width * n.duration;
+              O(c);
+            },
+            children: [
+              /* @__PURE__ */ r(
+                "div",
+                {
+                  className: t.progressBar,
+                  style: { width: F + "%" },
+                  children: /* @__PURE__ */ r("span", {})
+                }
+              ),
+              X !== null && (p || A !== null) && /* @__PURE__ */ r(
+                "div",
+                {
+                  className: t.progressTooltip,
+                  style: { left: A ?? 0 },
+                  children: X
+                }
+              )
+            ]
+          }
+        ),
+        /* @__PURE__ */ l("div", { className: t.controlBtn, children: [
+          /* @__PURE__ */ l("div", { className: t.centeredButtons, children: [
+            /* @__PURE__ */ r(
+              "span",
+              {
+                className: "material-icons-round",
+                onClick: Q,
+                children: "skip_previous"
+              }
+            ),
+            /* @__PURE__ */ r("div", { className: t.playPause, children: /* @__PURE__ */ r("span", { className: "material-icons-round", onClick: N, children: V }) }),
+            /* @__PURE__ */ r("span", { className: "material-icons-round", onClick: () => S(), children: "skip_next" })
+          ] }),
+          /* @__PURE__ */ l("div", { className: t.volumeContainer, children: [
+            /* @__PURE__ */ r("span", { className: "material-icons-round", id: "volume", children: "volume_up" }),
+            /* @__PURE__ */ r("div", { className: t.hoverArea }),
+            /* @__PURE__ */ r(
+              "input",
+              {
+                type: "range",
+                className: t.volumeSlider,
+                id: "volumeSlider",
+                min: "0",
+                max: "1",
+                step: "0.01",
+                value: L,
+                onChange: K
+              }
+            )
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ r("div", { className: t.playlistScroll, children: /* @__PURE__ */ r("ul", { children: o.map((e) => /* @__PURE__ */ l(
+      "li",
+      {
+        className: t.playlistScrollItem,
+        onClick: () => {
+          s && (e.id === s.id ? N() : M(e, !0));
+        },
+        children: [
+          /* @__PURE__ */ l("div", { className: t.miniCover, children: [
+            e.cover && /* @__PURE__ */ r(
+              "img",
+              {
+                src: e.cover,
+                alt: `${e.title} cover`
+              }
+            ),
+            /* @__PURE__ */ r("div", { className: t.overlay }),
+            /* @__PURE__ */ r("span", { className: "material-icons-round " + t.playOverlay, children: "play_arrow" })
+          ] }),
+          /* @__PURE__ */ l("div", { className: t.playlistTextContainer, children: [
+            /* @__PURE__ */ r("span", { className: t.song, children: e.title }),
+            /* @__PURE__ */ r("span", { className: t.artist, children: e.artist })
+          ] }),
+          /* @__PURE__ */ r("div", { className: t.spacer }),
+          /* @__PURE__ */ r("span", { className: t.playlistSongLength, children: b[e.id] || "loading..." })
+        ]
+      },
+      e.id
+    )) }) }),
+    /* @__PURE__ */ r(
+      "audio",
+      {
+        ref: i,
+        className: t.mainSong,
+        src: s?.src,
+        preload: "auto"
+      }
+    )
+  ] }) });
 }
-function u(e) {
-	return new Promise((t) => {
-		let n = new Audio(e);
-		n.addEventListener("loadedmetadata", () => {
-			let e = n.duration;
-			t(d(e));
-		});
-	});
+function Ie(o) {
+  return new Promise((u) => {
+    const v = new Audio(o);
+    v.addEventListener("loadedmetadata", () => {
+      const _ = v.duration;
+      u(P(_));
+    });
+  });
 }
-function d(e) {
-	let t = String(Math.floor(e / 60)), n = String(Math.floor(e % 60));
-	return n.length < 2 && (n = "0" + n), t + ":" + n;
+function P(o) {
+  const u = String(Math.floor(o / 60));
+  let v = String(Math.floor(o % 60));
+  return v.length < 2 && (v = "0" + v), u + ":" + v;
 }
-export { l as AudioPlayer };
+export {
+  Pe as AudioPlayer
+};
