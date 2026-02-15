@@ -33,14 +33,7 @@ var c = {
 	mainSong: "_mainSong_ogu03_315"
 };
 function l({ playlist: l }) {
-	let [f, p] = i(!1), [m, h] = i(!1), [g, _] = i(() => {
-		let e = sessionStorage.getItem("currentSongId");
-		if (e) {
-			let t = l.find((t) => t.id === Number(e));
-			if (t) return t;
-		}
-		return l[0] || null;
-	}), [v, y] = i(0), [b, x] = i(1), [S, C] = i({}), [w, T] = i(!1), [E, D] = i(null), [O, k] = i(null), A = r(null), j = r(null), M = f ? "pause" : "play_arrow", [N, P] = i(0), F = n(() => N ? v / N * 100 : 0, [v, N]);
+	let [f, p] = i(!1), [m, h] = i(!1), [g, _] = i(l[0] || null), [v, y] = i(0), [b, x] = i(1), [S, C] = i({}), [w, T] = i(!1), [E, D] = i(null), [O, k] = i(null), A = r(null), j = r(null), M = f ? "pause" : "play_arrow", [N, P] = i(0), F = n(() => N ? v / N * 100 : 0, [v, N]);
 	function I(e) {
 		let t = parseFloat(e.target.value);
 		x(t), A.current && (A.current.volume = t);
@@ -117,6 +110,13 @@ function l({ playlist: l }) {
 		J,
 		m
 	]), t(() => {
+		if (typeof window > "u") return;
+		let e = sessionStorage.getItem("currentSongId");
+		if (e) {
+			let t = l.find((t) => t.id === Number(e));
+			t && _(t);
+		}
+	}, [l]), t(() => {
 		l.forEach((e) => {
 			e?.src && u(e.src).then((t) => {
 				C((n) => ({
