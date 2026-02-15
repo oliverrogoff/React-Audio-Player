@@ -1,28 +1,20 @@
+// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 export default defineConfig({
   publicDir: false,
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'AudioPlayer',
       fileName: 'index',
-      formats: ['es', 'cjs'],
+      formats: ['es'] // ONLY ESM for browser-friendly Astro consumption
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime',
-        },
-      },
     },
   },
 });
