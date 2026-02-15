@@ -1,7 +1,18 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
+  publicDir: false,
   plugins: [react()],
-})
+  build: {
+    lib: {
+      entry: "src/index.ts",
+      name: "AudioPlayer",
+      fileName: "index",
+      formats: ["es"]
+    },
+    rolldownOptions: {
+      external: ["react", "react-dom"]
+    }
+  }
+});
