@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# React Audio Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, reusable React audio player component with playlist support. No external dependencies beyond React.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Playlist with track switching and auto-advance
+- Progress bar with scrub, seek, and hover tooltip
+- Vertical volume slider
+- Spacebar play/pause
+- Touch support for mobile
+- Responsive layout via container queries
+- Import stylesheet alongside player
+- Material Icons loaded automatically
 
-## React Compiler
+## Install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install git@github.com:oliverrogoff/React-Audio-Player.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```jsx
+import { AudioPlayer } from 'react-audio-player';
+import "./dist/audio-player.css"
 
-export default defineConfig([
-  globalIgnores(['dist']),
+const tracks = [
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
+    id: '1',
+    title: 'Morning Light',
+    artist: 'Ada Sun',
+    src: '/audio/morning-light.mp3',
+    cover: '/images/morning-light.jpg',
   },
-])
+  {
+    id: '2',
+    title: 'Coastal Drive',
+    artist: 'Ada Sun',
+    src: '/audio/coastal-drive.mp3',
+    cover: '/images/coastal-drive.jpg',
+  },
+];
+
+function App() {
+  return <AudioPlayer playlist={tracks} client:load />;
+}
 ```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `playlist` | `Track[]` | `[]` | Array of track objects |
+
+## Track Object
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | `string` | yes | Unique identifier |
+| `title` | `string` | yes | Track title |
+| `artist` | `string` | yes | Artist name |
+| `src` | `string` | yes | Audio file URL |
+| `cover` | `string` | no | Cover art image URL |
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `Space` | Toggle play/pause |
