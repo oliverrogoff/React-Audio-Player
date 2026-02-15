@@ -1,20 +1,27 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   publicDir: false,
-  plugins: [react()],
+  plugins: [
+    react(),
+  ],
   build: {
     lib: {
-      entry: "src/index.ts",
-      name: "AudioPlayer",
-      fileName: "index",
-      formats: ["es"],  // ONLY ES modules
+      entry: resolve(__dirname, 'src/index.ts'),
+      name: 'AudioPlayer',
+      fileName: 'index',
+      formats: ['es', 'cjs'],
     },
-    rolldownOptions: {
-      external: ["react", "react-dom"],  // DO NOT bundle React
+    rollupOptions: {
+      external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
-        exports: "named",
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'jsxRuntime',
+        },
       },
     },
   },
