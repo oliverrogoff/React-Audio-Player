@@ -444,9 +444,17 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
 function getSongDuration(songUrl: string): Promise<string> {
     return new Promise((resolve) => {
         const audio = new Audio(songUrl);
+        audio.preload = 'metadata';
+        audio.src = songUrl;
+
         audio.addEventListener('loadedmetadata', () => {
             const duration: number = audio.duration;
+            audio.src = '';
             resolve(formatDuration(duration));
+        });
+
+        audio.addEventListener('error', () => {
+            resolve('--:--'); // Fallback for failed loads
         });
     });
 }
