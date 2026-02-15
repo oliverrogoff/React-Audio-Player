@@ -13,8 +13,9 @@ export default defineConfig({
       fileName: () => 'index.js', // <-- force output filename
       formats: ['es'] // ONLY ESM for browser-friendly Astro consumption
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-    },
+      cssCodeSplit: true, // extract CSS
+    }
   },
 });
