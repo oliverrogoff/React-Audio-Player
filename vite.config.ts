@@ -10,7 +10,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'AudioPlayer',
-      fileName: 'index',
+      fileName: () => 'index.js', // <-- force output filename
       formats: ['es'] // ONLY ESM for browser-friendly Astro consumption
     },
     rollupOptions: {
