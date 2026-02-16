@@ -1,6 +1,6 @@
 import { jsx as r, Fragment as ne, jsxs as c } from "react/jsx-runtime";
 import { useState as l, useRef as j, useEffect as p } from "react";
-const te = "_wrapper_uuosx_4", re = "_spacer_uuosx_24", oe = "_current_uuosx_28", se = "_currentControls_uuosx_36", ie = "_controlBtn_uuosx_44", ae = "_musicImage_uuosx_50", ce = "_musicTitles_uuosx_62", le = "_songName_uuosx_62", ue = "_artistName_uuosx_68", de = "_progressDetails_uuosx_75", me = "_progressBar_uuosx_97", ve = "_progressTooltip_uuosx_121", pe = "_time_uuosx_135", he = "_centeredButtons_uuosx_152", _e = "_playPause_uuosx_170", fe = "_volumeContainer_uuosx_174", ge = "_volumeSlider_uuosx_187", we = "_hoverArea_uuosx_202", Ne = "_playlistScroll_uuosx_222", ye = "_playlistScrollItem_uuosx_238", xe = "_miniCover_uuosx_245", Se = "_overlay_uuosx_256", Le = "_playOverlay_uuosx_260", Ee = "_playlistTextContainer_uuosx_287", Ce = "_song_uuosx_62", Te = "_artist_uuosx_68", Ie = "_playlistSongLength_uuosx_307", Be = "_mainSong_uuosx_316", t = {
+const te = "_wrapper_uuosx_4", re = "_spacer_uuosx_24", oe = "_current_uuosx_28", se = "_currentControls_uuosx_36", ie = "_controlBtn_uuosx_44", ae = "_musicImage_uuosx_50", ce = "_musicTitles_uuosx_62", le = "_songName_uuosx_62", ue = "_artistName_uuosx_68", de = "_progressDetails_uuosx_75", me = "_progressBar_uuosx_97", ve = "_progressTooltip_uuosx_121", pe = "_time_uuosx_135", he = "_centeredButtons_uuosx_152", _e = "_playPause_uuosx_170", fe = "_volumeContainer_uuosx_174", ge = "_volumeSlider_uuosx_187", we = "_hoverArea_uuosx_202", Ne = "_playlistScroll_uuosx_222", ye = "_playlistScrollItem_uuosx_238", Se = "_miniCover_uuosx_245", xe = "_overlay_uuosx_256", Le = "_playOverlay_uuosx_260", Ee = "_playlistTextContainer_uuosx_287", Ce = "_song_uuosx_62", Te = "_artist_uuosx_68", Ie = "_playlistSongLength_uuosx_307", Be = "_mainSong_uuosx_316", t = {
   wrapper: te,
   spacer: re,
   current: oe,
@@ -21,8 +21,8 @@ const te = "_wrapper_uuosx_4", re = "_spacer_uuosx_24", oe = "_current_uuosx_28"
   hoverArea: we,
   playlistScroll: Ne,
   playlistScrollItem: ye,
-  miniCover: xe,
-  overlay: Se,
+  miniCover: Se,
+  overlay: xe,
   playOverlay: Le,
   playlistTextContainer: Ee,
   song: Ce,
@@ -31,7 +31,7 @@ const te = "_wrapper_uuosx_4", re = "_spacer_uuosx_24", oe = "_current_uuosx_28"
   mainSong: Be
 };
 function De({ playlist: o }) {
-  const [u, d] = l(!1), [F, k] = l(!1), [s, w] = l(null), [D, N] = l(0), [y, K] = l(1), [X, b] = l({}), [v, f] = l(!1), [A, x] = l(null), [O, S] = l(null), [R, H] = l(0), i = j(null), L = j(null), W = u ? "pause" : "play_arrow", $ = R ? D / R * 100 : 0;
+  const [u, d] = l(!1), [F, k] = l(!1), [s, w] = l(null), [D, N] = l(0), [y, K] = l(1), [X, A] = l({}), [v, f] = l(!1), [b, S] = l(null), [O, x] = l(null), [R, H] = l(0), i = j(null), L = j(null), W = u ? "pause" : "play_arrow", $ = R ? D / R * 100 : 0;
   function q(e) {
     const n = parseFloat(e.target.value);
     K(n), i.current && (i.current.volume = n);
@@ -45,12 +45,12 @@ function De({ playlist: o }) {
   function C(e) {
     if (!i.current || !L.current) return;
     const n = L.current.getBoundingClientRect(), a = e.clientX - n.left, h = Math.min(Math.max(a / n.width, 0), 1) * i.current.duration;
-    U(h), S(a), x(_(h));
+    U(h), x(a), S(_(h));
   }
   function z(e) {
     if (!i.current?.duration) return;
     const n = e.currentTarget.getBoundingClientRect(), a = (e.clientX - n.left) / n.width, m = i.current.duration * a;
-    S(e.clientX - n.left), x(_(m));
+    x(e.clientX - n.left), S(_(m));
   }
   function G() {
     f(!0);
@@ -71,7 +71,7 @@ function De({ playlist: o }) {
     v && f(!1);
   }
   function Q() {
-    x(null), S(null);
+    S(null), x(null);
   }
   function M() {
     u ? Z() : Y();
@@ -99,7 +99,7 @@ function De({ playlist: o }) {
     if (!e || !s) return;
     s.id !== null && sessionStorage.setItem("currentSongId", String(s.id));
     const n = () => V(!0), a = () => N(e.currentTime), m = () => {
-      H(e.duration), b((P) => ({
+      H(e.duration), A((P) => ({
         ...P,
         [s.id]: _(e.duration)
       }));
@@ -114,7 +114,7 @@ function De({ playlist: o }) {
   }, [s]), p(() => {
     if (!o.length || (o.forEach((n) => {
       n?.src && Me(n.src).then((a) => {
-        b((m) => ({
+        A((m) => ({
           ...m,
           [n.id]: a
         }));
@@ -122,7 +122,7 @@ function De({ playlist: o }) {
     }), typeof window > "u")) return;
     const e = sessionStorage.getItem("currentSongId");
     if (console.log("savedId:", e, "playlist ids:", o.map((n) => n.id)), e) {
-      const n = o.find((a) => a.id === Number(e));
+      const n = o.find((a) => String(a.id) === e);
       if (n) {
         console.log("saved song:", n), w(n);
         return;
@@ -187,12 +187,12 @@ function De({ playlist: o }) {
                   children: /* @__PURE__ */ r("span", {})
                 }
               ),
-              A !== null && (v || O !== null) && /* @__PURE__ */ r(
+              b !== null && (v || O !== null) && /* @__PURE__ */ r(
                 "div",
                 {
                   className: t.progressTooltip,
                   style: { left: O ?? 0 },
-                  children: A
+                  children: b
                 }
               )
             ]
