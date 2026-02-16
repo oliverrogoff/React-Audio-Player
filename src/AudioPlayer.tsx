@@ -1,6 +1,5 @@
-import styles from "./AudioPlayer.module.css"
-import {useState, useRef, useEffect, useCallback, useMemo} from 'react';
-import * as React from "react";
+import styles from "./AudioPlayer.module.css";
+import { useState, useRef, useEffect } from "react";
 
 export type Song = {
     id: number;
@@ -8,40 +7,42 @@ export type Song = {
     artist: string;
     src: string;
     cover: string;
+};
+
+interface AudioPlayerProps {
+    playlist: Song[];
 }
 
-export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [shouldPlayOnLoad, setShouldPlayOnLoad] = useState<boolean>(false);
-    const [currentSong, setCurrentSong] = useState<Song | null>(playlist[0] || null);
-    const [currentTime, setCurrentTime] = useState<number>(0);
-    const [volume, setVolume] = useState<number>(1);
+export default function AudioPlayer({ playlist }: AudioPlayerProps) {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [shouldPlayOnLoad, setShouldPlayOnLoad] = useState(false);
+    const [currentSong, setCurrentSong] = useState<Song | null>(null);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [volume, setVolume] = useState(1);
     const [durations, setDurations] = useState<Record<number, string>>({});
-    const [isScrubbing, setIsScrubbing] = useState<boolean>(false);
+    const [isScrubbing, setIsScrubbing] = useState(false);
     const [hoverTime, setHoverTime] = useState<string | null>(null);
     const [hoverX, setHoverX] = useState<number | null>(null);
+    const [duration, setDuration] = useState(0);
 
-    const audio= useRef<HTMLAudioElement | null>(null);
+    const audio = useRef<HTMLAudioElement | null>(null);
     const progressBarRef = useRef<HTMLDivElement | null>(null);
-    const playIcon: string = isPlaying ? "pause" : "play_arrow";
-    // const [progress, setProgress] = useState<number>(0);
-    const [duration, setDuration] = useState<number>(0);
-    const progress = useMemo(() => {
-        return duration ? (currentTime / duration) * 100 : 0;
-    }, [currentTime, duration]);
+    const playIcon = isPlaying ? "pause" : "play_arrow";
+    const progress = duration ? (currentTime / duration) * 100 : 0;
 
-    function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>): void {
-        const newVolume: number = parseFloat(e.target.value);
+    function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const newVolume = parseFloat(e.target.value);
         setVolume(newVolume);
         if (audio.current) {
             audio.current.volume = newVolume;
         }
     }
 
-    function handleCurrentSongChange(song: Song, autoPlay: boolean = false): void {
+    function handleCurrentSongChange(song: Song, autoPlay = false) {
         if (audio.current) {
-            audio.current.pause()
-            setCurrentTime(0)
+            audio.current.pause();
+            setCurrentTime(0);
+            setDuration(0);
         }
         if (autoPlay) {
             setShouldPlayOnLoad(true);
@@ -49,66 +50,46 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
         setCurrentSong(song);
     }
 
-    function handleCurrentTimeChange(newTime: number): void {
+    function handleCurrentTimeChange(newTime: number) {
         if (audio.current) {
             audio.current.currentTime = newTime;
         }
         setCurrentTime(newTime);
     }
 
+    function handleScrub(e: React.MouseEvent | React.Touch | MouseEvent | Touch) {
+        if (!audio.current || !progressBarRef.current) return;
+        const rect = progressBarRef.current.getBoundingClientRect();
+        const scrubX = e.clientX - rect.left;
+        const percent = Math.min(Math.max(scrubX / rect.width, 0), 1);
+        const newTime = percent * audio.current.duration;
 
-    const handleScrub = useCallback(
-        (e:
-             React.MouseEvent<HTMLElement> |
-             React.Touch |
-             MouseEvent |
-             Touch
-        ): void => {
-            if (!audio.current || !progressBarRef.current ) return;
-            const rect: DOMRect = progressBarRef.current.getBoundingClientRect();
-            const scrubX: number = e.clientX - rect.left;
-            const percent: number = Math.min(Math.max(scrubX / rect.width, 0), 1);
-            const newTime: number = percent * audio.current.duration;
+        handleCurrentTimeChange(newTime);
+        setHoverX(scrubX);
+        setHoverTime(formatDuration(newTime));
+    }
 
-            handleCurrentTimeChange(newTime);
-            setHoverX(scrubX);
-            setHoverTime(String(newTime));
-        },[]);
-
-    const handleHoverMove = useCallback((e: React.MouseEvent | MouseEvent): void => {
-        if (!audio.current?.duration || !progressBarRef.current) return;
-        const rect: DOMRect = progressBarRef.current.getBoundingClientRect();
-        const percent: number = (e.clientX - rect.left) / rect.width;
-        const time: number = audio.current.duration * percent;
+    function handleHoverMove(e: React.MouseEvent | MouseEvent) {
+        if (!audio.current?.duration) return;
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        const time = audio.current.duration * percent;
 
         setHoverX(e.clientX - rect.left);
         setHoverTime(formatDuration(time));
-    },[]);
-
-    function play(): void {
-        audio.current?.play();
     }
 
-    function pause(): void {
-        audio.current?.pause();
-    }
-
-    const toggleIsPlaying = useCallback( (): void => {
-        if (isPlaying) {
-            pause()
-        } else {
-            play()
-        }
-    },[isPlaying]);
-
-
-    //Handle Mouse Actions
-    //=============================
-    function handleMouseDown(): void {
+    function handleMouseDown() {
         setIsScrubbing(true);
     }
 
-    function handleMouseMove(e: React.MouseEvent<HTMLElement>): void {
+    function handleMouseUp() {
+        if (isScrubbing) {
+            setIsScrubbing(false);
+        }
+    }
+
+    function handleMouseMove(e: React.MouseEvent<HTMLElement> | MouseEvent) {
         if (isScrubbing) {
             handleScrub(e);
         } else {
@@ -116,122 +97,129 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
         }
     }
 
-    function handleTouchStart(e: React.TouchEvent<HTMLElement>): void {
+    function handleTouchStart(e: React.TouchEvent<HTMLElement>) {
         setIsScrubbing(true);
         handleScrub(e.touches[0]);
     }
 
-    function handleMouseLeave(): void {
+    function handleTouchMove(e: TouchEvent) {
+        if (isScrubbing) {
+            handleScrub(e.touches[0]);
+        }
+    }
+
+    function handleTouchEnd() {
+        if (isScrubbing) {
+            setIsScrubbing(false);
+        }
+    }
+
+    function handleMouseLeave() {
         setHoverTime(null);
         setHoverX(null);
     }
 
-    //Player Button Functions
-    //=========================
+    function toggleIsPlaying() {
+        if (isPlaying) {
+            pause();
+        } else {
+            play();
+        }
+    }
 
-    const next = useCallback((autoPlay: boolean = false)=> {
+    function play() {
+        audio.current?.play();
+    }
+
+    function pause() {
+        audio.current?.pause();
+    }
+
+    function next(autoPlay = false) {
         if (currentSong && playlist.length > 0) {
-            let i: number = playlist.findIndex((song: Song): boolean => song.id === currentSong.id);
+            let i = playlist.findIndex((song) => song.id === currentSong.id);
             if (i >= 0) {
                 i = (i + 1) % playlist.length;
-                handleCurrentSongChange(playlist[i], (isPlaying || autoPlay));
+                handleCurrentSongChange(playlist[i], isPlaying || autoPlay);
             }
         }
-    }, [currentSong, isPlaying, playlist]);
+    }
 
-    function prev(): void {
+    function prev() {
         if (currentSong && playlist.length > 0) {
-            let i: number = playlist.findIndex((song:Song): boolean => song.id === currentSong.id);
+            let i = playlist.findIndex((song) => song.id === currentSong.id);
             if (i >= 0) {
-                i = (i - 1 + playlist.length) % playlist.length
+                i = (i - 1 + playlist.length) % playlist.length;
                 handleCurrentSongChange(playlist[i], isPlaying);
             }
         }
     }
 
+    // Audio event listeners: canplay, timeupdate, ended
     useEffect(() => {
-        const audioElement = audio.current;
-
-        if (!audioElement || !currentSong) return;
+        const el = audio.current;
+        if (!el || !currentSong) return;
 
         if (currentSong.id) {
-            sessionStorage.setItem('currentSongId', String(currentSong.id));
+            sessionStorage.setItem("currentSongId", String(currentSong.id));
         }
 
         const handleEnded = () => next(true);
-        const handleTimeUpdate = () => {
-            const newTime = audioElement.currentTime;
-            setCurrentTime(newTime);
-        };
+        const handleTimeUpdate = () => setCurrentTime(el.currentTime);
+        const handleLoadedMetadata = () => setDuration(el.duration);
+
         const onCanPlay = () => {
-            if (audioElement.src.includes(currentSong.src) && shouldPlayOnLoad && audioElement.paused) {
-                audioElement.play().catch((err: Error) => {
-                    console.warn('Playback failed:', err);
-                });
+            if (el.src.includes(currentSong.src)) {
+                if (shouldPlayOnLoad && el.paused) {
+                    el.play().catch((err: Error) => {
+                        console.warn("Playback failed:", err);
+                    });
+                }
                 setShouldPlayOnLoad(false);
             }
         };
-        audioElement.addEventListener('loadeddata', onCanPlay);
-        audioElement.addEventListener('timeupdate', handleTimeUpdate);
-        audioElement.addEventListener('ended', handleEnded);
+
+        el.addEventListener("loadeddata", onCanPlay);
+        el.addEventListener("loadedmetadata", handleLoadedMetadata);
+        el.addEventListener("timeupdate", handleTimeUpdate);
+        el.addEventListener("ended", handleEnded);
 
         return () => {
-            audioElement.removeEventListener('loadeddata', onCanPlay);
-            audioElement.removeEventListener('timeupdate', handleTimeUpdate);
-            audioElement.removeEventListener('ended', handleEnded);
+            el.removeEventListener("loadeddata", onCanPlay);
+            el.removeEventListener("loadedmetadata", handleLoadedMetadata);
+            el.removeEventListener("timeupdate", handleTimeUpdate);
+            el.removeEventListener("ended", handleEnded);
         };
-    }, [currentSong, next, shouldPlayOnLoad]);
+    }, [currentSong]);
 
-    useEffect(() => {
-        if (typeof window === "undefined") return; // SSR safety
-
-        const savedId = sessionStorage.getItem('currentSongId');
-        if (savedId) {
-            const savedSong = playlist.find(song => song.id === Number(savedId));
-            if (savedSong) {
-                // eslint-disable-next-line
-                setCurrentSong(savedSong);
-            }
-        }
-    }, [playlist]); // run only once
-
+    // Load durations and restore saved song on playlist change
     useEffect(() => {
         playlist.forEach((song) => {
             if (!song?.src) return;
-            getSongDuration(song.src)
-                .then((duration: string) => {
-                    setDurations((prev) => ({
-                        ...prev,
-                        [song.id]: duration,
-                    }));
-                });
+            getSongDuration(song.src).then((duration) => {
+                setDurations((prev) => ({
+                    ...prev,
+                    [song.id]: duration,
+                }));
+            });
         });
+
+        if (typeof window === "undefined") return;
+
+        const savedId = sessionStorage.getItem("currentSongId");
+        if (savedId) {
+            const savedSong = playlist.find((song) => song.id === Number(savedId));
+            if (savedSong) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setCurrentSong(savedSong);
+                return;
+            }
+        }
+        setCurrentSong(playlist[0]);
     }, [playlist]);
 
+    // Global scrubbing listeners
     useEffect(() => {
-
-        function handleMouseMove(e: MouseEvent): void {
-            if (isScrubbing) {
-                handleScrub(e);
-            } else {
-                handleHoverMove(e);
-            }
-        }
-        function handleTouchMove(e: TouchEvent): void {
-            if (isScrubbing) {
-                handleScrub(e.touches[0]);
-            }
-        }
-        function handleMouseUp(): void{
-            if (isScrubbing) {
-                setIsScrubbing(false);
-            }
-        }
-        function handleTouchEnd(): void {
-            if (isScrubbing) {
-                setIsScrubbing(false);
-            }
-        }
         if (isScrubbing) {
             window.addEventListener("mousemove", handleMouseMove);
             window.addEventListener("mouseup", handleMouseUp);
@@ -249,64 +237,46 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
             window.removeEventListener("touchmove", handleTouchMove);
             window.removeEventListener("touchend", handleTouchEnd);
         };
-    }, [isScrubbing, handleScrub, handleHoverMove]);
+    }, [isScrubbing]);
 
+    // Sync volume to audio element
     useEffect(() => {
         if (audio.current) audio.current.volume = volume;
     }, [volume]);
 
+    // Spacebar play/pause
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (document.activeElement) {
-                if (e.code === 'Space' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
-                    e.preventDefault();
-                    toggleIsPlaying();
-                }
+            if (
+                e.code === "Space" &&
+                !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")
+            ) {
+                e.preventDefault();
+                toggleIsPlaying();
             }
         };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isPlaying, toggleIsPlaying]);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isPlaying]);
 
+    // Sync isPlaying state with audio element events
     useEffect(() => {
-        const audioElement = audio.current;
-        if (!audioElement || !currentSong) return;
+        const el = audio.current;
+        if (!el) return;
 
-        const handleLoadedMetadata = () => {
-            setDuration(audioElement.duration);
-        };
+        const updatePlayingState = () => setIsPlaying(!el.paused);
 
-        audioElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-
-        // ... rest of your event listeners
+        el.addEventListener("play", updatePlayingState);
+        el.addEventListener("pause", updatePlayingState);
+        el.addEventListener("ended", updatePlayingState);
 
         return () => {
-            audioElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
-            // ... rest of cleanup
-        };
-    }, [currentSong, next, shouldPlayOnLoad]);
-
-    useEffect(() => {
-        const audioElement: HTMLAudioElement | null = audio.current;
-        if (!audioElement) return;
-
-        const updatePlayingState = () => {
-            setIsPlaying(!audioElement.paused);
-        };
-
-        audioElement.addEventListener('play', updatePlayingState);
-        audioElement.addEventListener('pause', updatePlayingState);
-        audioElement.addEventListener('ended', updatePlayingState);
-
-        return () => {
-            audioElement.removeEventListener('play', updatePlayingState);
-            audioElement.removeEventListener('pause', updatePlayingState);
-            audioElement.removeEventListener('ended', updatePlayingState);
+            el.removeEventListener("play", updatePlayingState);
+            el.removeEventListener("pause", updatePlayingState);
+            el.removeEventListener("ended", updatePlayingState);
         };
     }, []);
-
-
 
     return (
         <>
@@ -324,13 +294,15 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
                     </div>
                     <div className={styles.currentControls}>
                         <div className={styles.musicTitles}>
-                            <div className={styles.songName}>{currentSong?.title || ''}</div>
-                            <div className={styles.artistName}>{currentSong?.artist || ''}</div>
+                            <div className={styles.songName}>{currentSong?.title || ""}</div>
+                            <div className={styles.artistName}>{currentSong?.artist || ""}</div>
                         </div>
                         <div className={styles.spacer}></div>
                         <div className={styles.time}>
                             <span className={styles.currentTime}>{formatDuration(currentTime)}</span>
-                            <span className={styles.finalTime}>{currentSong ? durations[currentSong.id] : ''}</span>
+                            <span className={styles.finalTime}>
+                                {currentSong ? durations[currentSong.id] : ""}
+                            </span>
                         </div>
                         <div
                             className={styles.progressDetails}
@@ -340,11 +312,10 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
                             onMouseMove={handleMouseMove}
                             onMouseLeave={handleMouseLeave}
                             onClick={(e) => {
-                                const audioElement: HTMLAudioElement | null = audio.current;
-                                if (!audioElement) return;
+                                if (!audio.current) return;
                                 const rect = e.currentTarget.getBoundingClientRect();
                                 const clickX = e.clientX - rect.left;
-                                const newTime = (clickX / rect.width) * audioElement.duration;
+                                const newTime = (clickX / rect.width) * audio.current.duration;
                                 handleCurrentTimeChange(newTime);
                             }}
                         >
@@ -354,7 +325,7 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
                             >
                                 <span></span>
                             </div>
-                            {(hoverTime !== null && (isScrubbing || hoverX !== null)) && (
+                            {hoverTime !== null && (isScrubbing || hoverX !== null) && (
                                 <div
                                     className={styles.progressTooltip}
                                     style={{ left: hoverX ?? 0 }}
@@ -365,19 +336,22 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
                         </div>
                         <div className={styles.controlBtn}>
                             <div className={styles.centeredButtons}>
-                                <span
-                                    className="material-icons-round"
-                                    onClick={prev}
-                                >
+                                <span className="material-icons-round" onClick={prev}>
                                     skip_previous
                                 </span>
                                 <div className={styles.playPause}>
-                                    <span className="material-icons-round" onClick={toggleIsPlaying}>{playIcon}</span>
+                                    <span className="material-icons-round" onClick={toggleIsPlaying}>
+                                        {playIcon}
+                                    </span>
                                 </div>
-                                <span className="material-icons-round" onClick={() => next()}>skip_next</span>
+                                <span className="material-icons-round" onClick={() => next()}>
+                                    skip_next
+                                </span>
                             </div>
                             <div className={styles.volumeContainer}>
-                                <span className="material-icons-round" id="volume">volume_up</span>
+                                <span className="material-icons-round" id="volume">
+                                    volume_up
+                                </span>
                                 <div className={styles.hoverArea}></div>
                                 <input
                                     type="range"
@@ -395,77 +369,73 @@ export default function AudioPlayer({ playlist }: { playlist: Song[] }) {
                 </div>
                 <div className={styles.playlistScroll}>
                     <ul>
-                        {
-                            playlist.map((song) => (
-                                <li
-                                    className={styles.playlistScrollItem}
-                                    key={song.id}
-                                    onClick={() => {
-                                        if (!currentSong) return;
-                                        if (song.id === currentSong.id) {
-                                            toggleIsPlaying();
-                                        } else {
-                                            handleCurrentSongChange(song, true);
-                                        }
-                                    }}
-                                >
-                                    <div className={styles.miniCover}>
-                                        {song.cover && (
-                                            <img
-                                                src={song.cover}
-                                                alt={`${song.title} cover`}
-                                            />
-                                        )}
-                                        <div className={styles.overlay} />
-                                        <span className={"material-icons-round " + styles.playOverlay}>play_arrow</span>
-                                    </div>
-                                    <div className={styles.playlistTextContainer}>
-                                        <span className={styles.song}>{song.title}</span>
-                                        <span className={styles.artist}>{song.artist}</span>
-                                    </div>
-                                    <div className={styles.spacer} />
-                                    <span className={styles.playlistSongLength}>{durations[song.id] || 'loading...'}</span>
-                                </li>
-                            ))
-                        }
+                        {playlist.map((song) => (
+                            <li
+                                className={styles.playlistScrollItem}
+                                key={song.id}
+                                onClick={() => {
+                                    if (!currentSong) return;
+                                    if (song.id === currentSong.id) {
+                                        toggleIsPlaying();
+                                    } else {
+                                        handleCurrentSongChange(song, true);
+                                    }
+                                }}
+                            >
+                                <div className={styles.miniCover}>
+                                    {song.cover && (
+                                        <img
+                                            src={song.cover}
+                                            alt={`${song.title} cover`}
+                                        />
+                                    )}
+                                    <div className={styles.overlay} />
+                                    <span className={"material-icons-round " + styles.playOverlay}>
+                                        play_arrow
+                                    </span>
+                                </div>
+                                <div className={styles.playlistTextContainer}>
+                                    <span className={styles.song}>{song.title}</span>
+                                    <span className={styles.artist}>{song.artist}</span>
+                                </div>
+                                <div className={styles.spacer} />
+                                <span className={styles.playlistSongLength}>
+                                    {durations[song.id] || "loading..."}
+                                </span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
                 <audio
                     ref={audio}
                     className={styles.mainSong}
                     src={currentSong?.src}
-                    preload='auto'
+                    preload="auto"
                 />
             </div>
         </>
-    )
+    );
 }
 
 function getSongDuration(songUrl: string): Promise<string> {
     return new Promise((resolve) => {
         const audio = new Audio(songUrl);
-        audio.preload = 'metadata';
-        audio.src = songUrl;
+        audio.preload = "metadata";
 
-        audio.addEventListener('loadedmetadata', () => {
-            const duration: number = audio.duration;
-            audio.src = '';
-            resolve(formatDuration(duration));
+        audio.addEventListener("loadedmetadata", () => {
+            resolve(formatDuration(audio.duration));
+            audio.src = "";
         });
 
-        audio.addEventListener('error', () => {
-            resolve('--:--'); // Fallback for failed loads
+        audio.addEventListener("error", () => {
+            resolve("--:--");
         });
     });
 }
 
-
-function formatDuration (duration: number): string {
-    const minutes: string = String(Math.floor(duration / 60));
-    let seconds: string = String(Math.floor(duration % 60));
-    if (seconds.length < 2) {
-        seconds = '0' + seconds;
-    }
+function formatDuration(duration: number): string {
+    const minutes = Math.floor(duration / 60);
+    let seconds = String(Math.floor(duration % 60));
+    if (seconds.length < 2) seconds = "0" + seconds;
     return minutes + ":" + seconds;
 }
-
