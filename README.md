@@ -25,7 +25,7 @@ npm install git@github.com:oliverrogoff/React-Audio-Player.git
 import { AudioPlayer } from 'react-audio-player';
 import "./dist/audio-player.css"
 
-const tracks = [
+const playlist = [
   {
     id: '1',
     title: 'Morning Light',
@@ -43,17 +43,17 @@ const tracks = [
 ];
 
 function App() {
-  return <AudioPlayer playlist={tracks} client:load />;
+  return <AudioPlayer playlist={playlist} client:load />;
 }
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `playlist` | `Track[]` | `[]` | Array of track objects |
+| Prop | Type     | Default | Description |
+|------|----------|---------|-------------|
+| `playlist` | `Song[]` | `[]` | Array of track objects |
 
-## Track Object
+## Song Object
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
