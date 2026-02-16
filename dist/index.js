@@ -121,10 +121,10 @@ function De({ playlist: o }) {
       });
     }), typeof window > "u")) return;
     const e = sessionStorage.getItem("currentSongId");
-    if (console.log("savedId:", e, "playlist ids:", o.map((n) => n.id)), e) {
+    if (e) {
       const n = o.find((a) => String(a.id) === e);
       if (n) {
-        console.log("saved song:", n), w(n);
+        w(n);
         return;
       }
     }
