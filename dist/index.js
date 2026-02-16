@@ -121,7 +121,7 @@ function De({ playlist: o }) {
       });
     }), typeof window > "u")) return;
     const e = sessionStorage.getItem("currentSongId");
-    if (e) {
+    if (console.log("savedId:", e, "playlist ids:", o.map((n) => n.id)), e) {
       const n = o.find((a) => a.id === Number(e));
       if (n) {
         w(n);
