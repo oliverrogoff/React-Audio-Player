@@ -155,18 +155,24 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         }
     }
 
-    // Audio event listeners: canplay, timeupdate, ended
+    // Audio event listeners
     useEffect(() => {
         const el = audio.current;
         if (!el || !currentSong) return;
 
-        if (currentSong.id) {
+        if (currentSong.id !== null) {
             sessionStorage.setItem("currentSongId", String(currentSong.id));
         }
 
         const handleEnded = () => next(true);
         const handleTimeUpdate = () => setCurrentTime(el.currentTime);
-        const handleLoadedMetadata = () => setDuration(el.duration);
+        const handleLoadedMetadata = () => {
+            setDuration(el.duration);
+            setDurations((prev) => ({
+                ...prev,
+                [currentSong.id]: formatDuration(el.duration),
+            }));
+        };
 
         const onCanPlay = () => {
             if (el.src.includes(currentSong.src)) {
@@ -192,14 +198,14 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         };
     }, [currentSong]);
 
-    // Load durations and restore saved song on playlist change
+    // Restore saved song and load durations on playlist change
     useEffect(() => {
         playlist.forEach((song) => {
             if (!song?.src) return;
-            getSongDuration(song.src).then((duration) => {
+            getSongDuration(song.src).then((dur) => {
                 setDurations((prev) => ({
                     ...prev,
-                    [song.id]: duration,
+                    [song.id]: dur,
                 }));
             });
         });
@@ -244,7 +250,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         if (audio.current) audio.current.volume = volume;
     }, [volume]);
 
-    // Spacebar play/pause
+    // Space bar play/pause
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (
@@ -301,7 +307,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                         <div className={styles.time}>
                             <span className={styles.currentTime}>{formatDuration(currentTime)}</span>
                             <span className={styles.finalTime}>
-                                {currentSong ? durations[currentSong.id] : ""}
+                                {currentSong ? durations[currentSong.id] || "" : ""}
                             </span>
                         </div>
                         <div
@@ -312,7 +318,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                             onMouseMove={handleMouseMove}
                             onMouseLeave={handleMouseLeave}
                             onClick={(e) => {
-                                if (!audio.current) return;
+                                if (!audio.current?.duration) return;
                                 const rect = e.currentTarget.getBoundingClientRect();
                                 const clickX = e.clientX - rect.left;
                                 const newTime = (clickX / rect.width) * audio.current.duration;
@@ -420,15 +426,8 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
 function getSongDuration(songUrl: string): Promise<string> {
     return new Promise((resolve) => {
         const audio = new Audio(songUrl);
-        audio.preload = "metadata";
-
         audio.addEventListener("loadedmetadata", () => {
             resolve(formatDuration(audio.duration));
-            audio.src = "";
-        });
-
-        audio.addEventListener("error", () => {
-            resolve("--:--");
         });
     });
 }
