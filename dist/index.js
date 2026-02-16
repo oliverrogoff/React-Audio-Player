@@ -112,14 +112,14 @@ function De({ playlist: o }) {
       e.removeEventListener("loadeddata", h), e.removeEventListener("loadedmetadata", m), e.removeEventListener("timeupdate", a), e.removeEventListener("ended", n);
     };
   }, [s]), p(() => {
-    if (o.forEach((n) => {
+    if (!o.length || (o.forEach((n) => {
       n?.src && Me(n.src).then((a) => {
         b((m) => ({
           ...m,
           [n.id]: a
         }));
       });
-    }), typeof window > "u") return;
+    }), typeof window > "u")) return;
     const e = sessionStorage.getItem("currentSongId");
     if (e) {
       const n = o.find((a) => a.id === Number(e));

@@ -200,6 +200,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
 
     // Restore saved song and load durations on playlist change
     useEffect(() => {
+        if (!playlist.length) return;
         playlist.forEach((song) => {
             if (!song?.src) return;
             getSongDuration(song.src).then((dur) => {
