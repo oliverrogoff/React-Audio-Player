@@ -218,6 +218,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         if (savedId) {
             const savedSong = playlist.find((song) => song.id === Number(savedId));
             if (savedSong) {
+                console.log("saved song:", savedSong);
                 // eslint-disable-next-line react-hooks/set-state-in-effect
                 setCurrentSong(savedSong);
                 return;

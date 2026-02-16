@@ -124,7 +124,7 @@ function De({ playlist: o }) {
     if (console.log("savedId:", e, "playlist ids:", o.map((n) => n.id)), e) {
       const n = o.find((a) => a.id === Number(e));
       if (n) {
-        w(n);
+        console.log("saved song:", n), w(n);
         return;
       }
     }
