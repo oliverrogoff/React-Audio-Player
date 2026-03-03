@@ -70,8 +70,8 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
     }
 
     function handleHoverMove(e: React.MouseEvent | MouseEvent) {
-        if (!audio.current?.duration) return;
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        if (!audio.current?.duration || !progressBarRef.current) return;
+        const rect = progressBarRef.current.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
         const time = audio.current.duration * percent;
 
@@ -160,11 +160,10 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         const el = audio.current;
         if (!el || !currentSong) return;
 
-        if (currentSong.id !== null) {
-            sessionStorage.setItem("currentSongId", String(currentSong.id));
-        }
+        sessionStorage.setItem("currentSongId", String(currentSong.id));
 
         const handleEnded = () => next(true);
+        const handleError = () => next(true);
         const handleTimeUpdate = () => setCurrentTime(el.currentTime);
         const handleLoadedMetadata = () => {
             setDuration(el.duration);
@@ -189,18 +188,23 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         el.addEventListener("loadedmetadata", handleLoadedMetadata);
         el.addEventListener("timeupdate", handleTimeUpdate);
         el.addEventListener("ended", handleEnded);
+        el.addEventListener("error", handleError);
 
         return () => {
             el.removeEventListener("loadeddata", onCanPlay);
             el.removeEventListener("loadedmetadata", handleLoadedMetadata);
             el.removeEventListener("timeupdate", handleTimeUpdate);
             el.removeEventListener("ended", handleEnded);
+            el.removeEventListener("error", handleError);
         };
-    }, [currentSong]);
+    }, [currentSong, playlist]);
 
     // Restore saved song and load durations on playlist change
     useEffect(() => {
         if (!playlist.length) return;
+
+        if (typeof window === "undefined") return;
+
         playlist.forEach((song) => {
             if (!song?.src) return;
             getSongDuration(song.src).then((dur) => {
@@ -210,8 +214,6 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                 }));
             });
         });
-
-        if (typeof window === "undefined") return;
 
         const savedId = sessionStorage.getItem("currentSongId");
         if (savedId) {
@@ -227,17 +229,11 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
 
     // Global scrubbing listeners
     useEffect(() => {
-        if (isScrubbing) {
-            window.addEventListener("mousemove", handleMouseMove);
-            window.addEventListener("mouseup", handleMouseUp);
-            window.addEventListener("touchmove", handleTouchMove);
-            window.addEventListener("touchend", handleTouchEnd);
-        } else {
-            window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("mouseup", handleMouseUp);
-            window.removeEventListener("touchmove", handleTouchMove);
-            window.removeEventListener("touchend", handleTouchEnd);
-        }
+        if (!isScrubbing) return;
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+        window.addEventListener("touchmove", handleTouchMove);
+        window.addEventListener("touchend", handleTouchEnd);
         return () => {
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("mouseup", handleMouseUp);
@@ -381,8 +377,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                                 className={styles.playlistScrollItem}
                                 key={song.id}
                                 onClick={() => {
-                                    if (!currentSong) return;
-                                    if (song.id === currentSong.id) {
+                                    if (currentSong && song.id === currentSong.id) {
                                         toggleIsPlaying();
                                     } else {
                                         handleCurrentSongChange(song, true);
@@ -427,9 +422,23 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
 function getSongDuration(songUrl: string): Promise<string> {
     return new Promise((resolve) => {
         const audio = new Audio(songUrl);
-        audio.addEventListener("loadedmetadata", () => {
+
+        function cleanup() {
+            audio.removeEventListener("loadedmetadata", onLoaded);
+            audio.removeEventListener("error", onError);
+            audio.src = "";
+        }
+        function onLoaded() {
             resolve(formatDuration(audio.duration));
-        });
+            cleanup();
+        }
+        function onError() {
+            resolve("--:--");
+            cleanup();
+        }
+
+        audio.addEventListener("loadedmetadata", onLoaded);
+        audio.addEventListener("error", onError);
     });
 }
 
