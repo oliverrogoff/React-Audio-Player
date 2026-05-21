@@ -17,6 +17,8 @@ export type Song = {
     cover?: string;
 };
 
+type IconName = "next" | "pause" | "play" | "prev" | "volume";
+
 interface AudioPlayerProps {
     playlist: Song[];
 }
@@ -24,7 +26,10 @@ interface AudioPlayerProps {
 export default function AudioPlayer({ playlist }: AudioPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [shouldPlayOnLoad, setShouldPlayOnLoad] = useState(false);
-    const [currentSong, setCurrentSong] = useState<Song | null>(null);
+    const [currentSongId, setCurrentSongId] = useState<Song["id"] | null>(() => {
+        if (typeof window === "undefined") return null;
+        return sessionStorage.getItem("currentSongId");
+    });
     const [currentTime, setCurrentTime] = useState(0);
     const [volume, setVolume] = useState(1);
     const [durations, setDurations] = useState<Record<string, string>>({});
@@ -35,8 +40,8 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
 
     const audio = useRef<HTMLAudioElement | null>(null);
     const progressBarRef = useRef<HTMLDivElement | null>(null);
-    const playIcon = isPlaying ? "pause" : "play_arrow";
-    const progress = duration ? (currentTime / duration) * 100 : 0;
+    const currentSong = getCurrentSong(playlist, currentSongId);
+    const progress = currentSong && duration ? (currentTime / duration) * 100 : 0;
 
     function handleVolumeChange(e: ChangeEvent<HTMLInputElement>) {
         const newVolume = parseFloat(e.target.value);
@@ -55,7 +60,7 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         if (autoPlay) {
             setShouldPlayOnLoad(true);
         }
-        setCurrentSong(song);
+        setCurrentSongId(song.id);
     }, []);
 
     const handleCurrentTimeChange = useCallback((newTime: number) => {
@@ -171,7 +176,9 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         const el = audio.current;
         if (!el || !currentSong) return;
 
-        sessionStorage.setItem("currentSongId", String(currentSong.id));
+        if (typeof window !== "undefined") {
+            sessionStorage.setItem("currentSongId", String(currentSong.id));
+        }
 
         const handleEnded = () => next(true);
         const handleError = () => next(true);
@@ -210,19 +217,13 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
         };
     }, [currentSong, next, playlist, shouldPlayOnLoad]);
 
-    // Restore saved song and load durations on playlist change
+    // Load durations on playlist change
     useEffect(() => {
         if (typeof window === "undefined") return;
 
         if (!playlist.length) {
             audio.current?.pause();
             sessionStorage.removeItem("currentSongId");
-            // The selected track is derived from the playlist prop.
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setCurrentSong(null);
-            setCurrentTime(0);
-            setDuration(0);
-            setIsPlaying(false);
             return;
         }
 
@@ -236,15 +237,6 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
             });
         });
 
-        const savedId = sessionStorage.getItem("currentSongId");
-        if (savedId) {
-            const savedSong = playlist.find((song) => String(song.id) === savedId);
-            if (savedSong) {
-                setCurrentSong(savedSong);
-                return;
-            }
-        }
-        setCurrentSong(playlist[0]);
     }, [playlist]);
 
     // Global scrubbing listeners
@@ -322,7 +314,9 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                         </div>
                         <div className={styles.spacer}></div>
                         <div className={styles.time}>
-                            <span className={styles.currentTime}>{formatDuration(currentTime)}</span>
+                            <span className={styles.currentTime}>
+                                {formatDuration(currentSong ? currentTime : 0)}
+                            </span>
                             <span className={styles.finalTime}>
                                 {currentSong ? durations[getSongKey(currentSong.id)] || "" : ""}
                             </span>
@@ -361,38 +355,38 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                             <div className={styles.centeredButtons}>
                                 <button
                                     type="button"
-                                    className={`${styles.iconButton} material-icons-round`}
+                                    className={styles.iconButton}
                                     aria-label="Previous track"
                                     onClick={prev}
                                 >
-                                    skip_previous
+                                    <SvgIcon name="prev" />
                                 </button>
                                 <div className={styles.playPause}>
                                     <button
                                         type="button"
-                                        className={`${styles.iconButton} ${styles.playPauseButton} material-icons-round`}
+                                        className={`${styles.iconButton} ${styles.playPauseButton}`}
                                         aria-label={isPlaying ? "Pause" : "Play"}
                                         onClick={toggleIsPlaying}
                                     >
-                                        {playIcon}
+                                        <SvgIcon name={isPlaying ? "pause" : "play"} />
                                     </button>
                                 </div>
                                 <button
                                     type="button"
-                                    className={`${styles.iconButton} material-icons-round`}
+                                    className={styles.iconButton}
                                     aria-label="Next track"
                                     onClick={() => next()}
                                 >
-                                    skip_next
+                                    <SvgIcon name="next" />
                                 </button>
                             </div>
                             <div className={styles.volumeContainer}>
                                 <span
-                                    className="material-icons-round"
+                                    className={styles.volumeIcon}
                                     id="volume"
                                     aria-hidden="true"
                                 >
-                                    volume_up
+                                    <SvgIcon name="volume" />
                                 </span>
                                 <div className={styles.hoverArea}></div>
                                 <input
@@ -433,8 +427,8 @@ export default function AudioPlayer({ playlist }: AudioPlayerProps) {
                                             />
                                         )}
                                         <div className={styles.overlay} />
-                                        <span className={"material-icons-round " + styles.playOverlay}>
-                                            play_arrow
+                                        <span className={styles.playOverlay}>
+                                            <SvgIcon name="play" />
                                         </span>
                                     </div>
                                     <div className={styles.playlistTextContainer}>
@@ -492,6 +486,54 @@ function formatDuration(duration: number): string {
     return minutes + ":" + seconds;
 }
 
+function getCurrentSong(playlist: Song[], currentSongId: Song["id"] | null): Song | null {
+    if (!playlist.length) return null;
+    if (currentSongId === null) return playlist[0];
+    return playlist.find((song) => getSongKey(song.id) === getSongKey(currentSongId)) ?? playlist[0];
+}
+
 function getSongKey(id: Song["id"]): string {
     return String(id);
+}
+
+function SvgIcon({ name }: { name: IconName }) {
+    return (
+        <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            focusable="false"
+        >
+            {name === "prev" && (
+                <>
+                    <path d="M6 5h2v14H6z" />
+                    <path d="m19 6-9 6 9 6z" />
+                </>
+            )}
+            {name === "next" && (
+                <>
+                    <path d="M16 5h2v14h-2z" />
+                    <path d="m5 6 9 6-9 6z" />
+                </>
+            )}
+            {name === "play" && <path d="m8 5 11 7-11 7z" />}
+            {name === "pause" && (
+                <>
+                    <path d="M7 5h4v14H7z" />
+                    <path d="M13 5h4v14h-4z" />
+                </>
+            )}
+            {name === "volume" && (
+                <>
+                    <path d="M4 9v6h4l5 4V5L8 9z" />
+                    <path
+                        d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                    />
+                </>
+            )}
+        </svg>
+    );
 }

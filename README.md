@@ -11,7 +11,7 @@ A lightweight, reusable React audio player component with playlist support. No e
 - Touch support for mobile
 - Responsive layout via container queries
 - Import stylesheet alongside player
-- Material Icons loaded automatically
+- Self-contained SVG controls
 
 ## Install
 
@@ -52,6 +52,10 @@ function App() {
 | Prop | Type     | Default | Description |
 |------|----------|---------|-------------|
 | `playlist` | `Song[]` | `[]` | Array of track objects |
+
+## Styling
+
+Set `--audio-player-font-family` on the player container or any parent to override the player font.
 
 ## Song Object
 

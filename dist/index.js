@@ -1,330 +1,364 @@
-import { jsx as r, Fragment as oe, jsxs as u } from "react/jsx-runtime";
-import { useState as h, useRef as G, useCallback as d, useEffect as p } from "react";
-const ie = "_wrapper_1diy9_4", ae = "_spacer_1diy9_24", se = "_current_1diy9_28", ce = "_currentControls_1diy9_36", le = "_controlBtn_1diy9_44", de = "_iconButton_1diy9_47", ue = "_musicImage_1diy9_51", me = "_musicTitles_1diy9_63", ve = "_songName_1diy9_63", he = "_artistName_1diy9_69", pe = "_progressDetails_1diy9_76", _e = "_progressBar_1diy9_98", ye = "_progressTooltip_1diy9_122", ge = "_time_1diy9_136", fe = "_centeredButtons_1diy9_153", Ne = "_playPauseButton_1diy9_180", Se = "_volumeContainer_1diy9_184", we = "_volumeSlider_1diy9_197", Le = "_hoverArea_1diy9_212", Ee = "_playlistScroll_1diy9_232", Ce = "_playlistScrollItem_1diy9_252", Te = "_miniCover_1diy9_263", Be = "_overlay_1diy9_274", be = "_playOverlay_1diy9_278", Ie = "_playlistTextContainer_1diy9_305", Pe = "_song_1diy9_63", Me = "_artist_1diy9_69", ke = "_playlistSongLength_1diy9_325", xe = "_mainSong_1diy9_334", t = {
-  wrapper: ie,
-  spacer: ae,
-  current: se,
-  currentControls: ce,
-  controlBtn: le,
-  iconButton: de,
-  musicImage: ue,
-  musicTitles: me,
-  songName: ve,
+import { jsx as n, Fragment as L, jsxs as c } from "react/jsx-runtime";
+import { useState as v, useRef as Q, useCallback as d, useEffect as h } from "react";
+const se = "_wrapper_1p7b9_1", ie = "_spacer_1p7b9_21", ce = "_current_1p7b9_25", le = "_currentControls_1p7b9_33", de = "_controlBtn_1p7b9_41", ue = "_iconButton_1p7b9_42", me = "_musicImage_1p7b9_46", ve = "_musicTitles_1p7b9_58", pe = "_songName_1p7b9_58", he = "_artistName_1p7b9_64", _e = "_progressDetails_1p7b9_71", fe = "_progressBar_1p7b9_93", ge = "_progressTooltip_1p7b9_117", be = "_time_1p7b9_131", ye = "_centeredButtons_1p7b9_148", Ne = "_volumeIcon_1p7b9_175", we = "_playOverlay_1p7b9_176", Se = "_playPauseButton_1p7b9_183", Le = "_volumeContainer_1p7b9_187", Ee = "_volumeSlider_1p7b9_204", Ce = "_hoverArea_1p7b9_219", Te = "_playlistScroll_1p7b9_239", Be = "_playlistScrollItem_1p7b9_259", Ie = "_miniCover_1p7b9_270", Me = "_overlay_1p7b9_281", Pe = "_playlistTextContainer_1p7b9_312", ke = "_song_1p7b9_58", xe = "_artist_1p7b9_64", De = "_playlistSongLength_1p7b9_332", Ae = "_mainSong_1p7b9_341", o = {
+  wrapper: se,
+  spacer: ie,
+  current: ce,
+  currentControls: le,
+  controlBtn: de,
+  iconButton: ue,
+  musicImage: me,
+  musicTitles: ve,
+  songName: pe,
   artistName: he,
-  progressDetails: pe,
-  progressBar: _e,
-  progressTooltip: ye,
-  time: ge,
-  centeredButtons: fe,
-  playPauseButton: Ne,
-  volumeContainer: Se,
-  volumeSlider: we,
-  hoverArea: Le,
-  playlistScroll: Ee,
-  playlistScrollItem: Ce,
-  miniCover: Te,
-  overlay: Be,
-  playOverlay: be,
-  playlistTextContainer: Ie,
-  song: Pe,
-  artist: Me,
-  playlistSongLength: ke,
-  mainSong: xe
+  progressDetails: _e,
+  progressBar: fe,
+  progressTooltip: ge,
+  time: be,
+  centeredButtons: ye,
+  volumeIcon: Ne,
+  playOverlay: we,
+  playPauseButton: Se,
+  volumeContainer: Le,
+  volumeSlider: Ee,
+  hoverArea: Ce,
+  playlistScroll: Te,
+  playlistScrollItem: Be,
+  miniCover: Ie,
+  overlay: Me,
+  playlistTextContainer: Pe,
+  song: ke,
+  artist: xe,
+  playlistSongLength: De,
+  mainSong: Ae
 };
-function $e({ playlist: o }) {
-  const [s, c] = h(!1), [_, y] = h(!1), [i, L] = h(null), [R, E] = h(0), [P, J] = h(1), [F, H] = h({}), [m, C] = h(!1), [U, M] = h(null), [V, k] = h(null), [j, x] = h(0), a = G(null), g = G(null), Q = s ? "pause" : "play_arrow", Y = j ? R / j * 100 : 0;
-  function Z(e) {
-    const n = parseFloat(e.target.value);
-    J(n), a.current && (a.current.volume = n);
-  }
-  const f = d((e, n = !1) => {
-    a.current && (a.current.pause(), E(0), x(0)), n && y(!0), L(e);
-  }, []), D = d((e) => {
-    a.current && (a.current.currentTime = e), E(e);
-  }, []), N = d((e) => {
-    if (!a.current || !g.current || !Number.isFinite(a.current.duration) || a.current.duration <= 0) return;
-    const n = g.current.getBoundingClientRect(), l = e.clientX - n.left, v = Math.min(Math.max(l / n.width, 0), 1), S = v * a.current.duration;
-    D(S), k(v * n.width), M(w(S));
-  }, [D]), K = d((e) => {
-    if (!a.current?.duration || !g.current) return;
-    const n = g.current.getBoundingClientRect(), l = Math.min(Math.max((e.clientX - n.left) / n.width, 0), 1), v = a.current.duration * l;
-    k(l * n.width), M(w(v));
-  }, []);
-  function ee() {
-    C(!0);
-  }
-  const A = d(() => {
-    m && C(!1);
-  }, [m]), T = d((e) => {
-    m ? N(e) : K(e);
-  }, [K, N, m]);
+function $e({ playlist: t }) {
+  const [i, l] = v(!1), [f, g] = v(!1), [C, Y] = v(() => typeof window > "u" ? null : sessionStorage.getItem("currentSongId")), [$, P] = v(0), [k, Z] = v(1), [H, F] = v({}), [m, T] = v(!1), [V, x] = v(null), [U, D] = v(null), [j, K] = v(0), s = Q(null), b = Q(null), a = ze(t, C), ee = a && j ? $ / j * 100 : 0;
   function ne(e) {
-    C(!0), N(e.touches[0]);
+    const r = parseFloat(e.target.value);
+    Z(r), s.current && (s.current.volume = r);
   }
-  const X = d((e) => {
-    m && N(e.touches[0]);
-  }, [N, m]), $ = d(() => {
-    m && C(!1);
-  }, [m]);
+  const y = d((e, r = !1) => {
+    s.current && (s.current.pause(), P(0), K(0)), r && g(!0), Y(e.id);
+  }, []), A = d((e) => {
+    s.current && (s.current.currentTime = e), P(e);
+  }, []), N = d((e) => {
+    if (!s.current || !b.current || !Number.isFinite(s.current.duration) || s.current.duration <= 0) return;
+    const r = b.current.getBoundingClientRect(), u = e.clientX - r.left, p = Math.min(Math.max(u / r.width, 0), 1), w = p * s.current.duration;
+    A(w), D(p * r.width), x(E(w));
+  }, [A]), W = d((e) => {
+    if (!s.current?.duration || !b.current) return;
+    const r = b.current.getBoundingClientRect(), u = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1), p = s.current.duration * u;
+    D(u * r.width), x(E(p));
+  }, []);
   function te() {
-    M(null), k(null);
+    T(!0);
   }
-  const W = d(() => {
-    a.current?.play().catch((e) => {
+  const X = d(() => {
+    m && T(!1);
+  }, [m]), B = d((e) => {
+    m ? N(e) : W(e);
+  }, [W, N, m]);
+  function re(e) {
+    T(!0), N(e.touches[0]);
+  }
+  const z = d((e) => {
+    m && N(e.touches[0]);
+  }, [N, m]), O = d(() => {
+    m && T(!1);
+  }, [m]);
+  function oe() {
+    x(null), D(null);
+  }
+  const q = d(() => {
+    s.current?.play().catch((e) => {
       console.warn("Playback failed:", e);
     });
-  }, []), q = d(() => {
-    a.current?.pause();
-  }, []), B = d(() => {
-    s ? q() : W();
-  }, [s, q, W]), b = d((e = !1) => {
-    if (i && o.length > 0) {
-      let n = o.findIndex((l) => l.id === i.id);
-      n >= 0 && (n = (n + 1) % o.length, f(o[n], s || e));
+  }, []), G = d(() => {
+    s.current?.pause();
+  }, []), I = d(() => {
+    i ? G() : q();
+  }, [i, G, q]), M = d((e = !1) => {
+    if (a && t.length > 0) {
+      let r = t.findIndex((u) => u.id === a.id);
+      r >= 0 && (r = (r + 1) % t.length, y(t[r], i || e));
     }
-  }, [i, f, s, o]), re = d(() => {
-    if (i && o.length > 0) {
-      let e = o.findIndex((n) => n.id === i.id);
-      e >= 0 && (e = (e - 1 + o.length) % o.length, f(o[e], s));
+  }, [a, y, i, t]), ae = d(() => {
+    if (a && t.length > 0) {
+      let e = t.findIndex((r) => r.id === a.id);
+      e >= 0 && (e = (e - 1 + t.length) % t.length, y(t[e], i));
     }
-  }, [i, f, s, o]);
-  return p(() => {
-    const e = a.current;
-    if (!e || !i) return;
-    sessionStorage.setItem("currentSongId", String(i.id));
-    const n = () => b(!0), l = () => b(!0), v = () => E(e.currentTime), S = () => {
-      x(e.duration), H((O) => ({
-        ...O,
-        [I(i.id)]: w(e.duration)
+  }, [a, y, i, t]);
+  return h(() => {
+    const e = s.current;
+    if (!e || !a) return;
+    typeof window < "u" && sessionStorage.setItem("currentSongId", String(a.id));
+    const r = () => M(!0), u = () => M(!0), p = () => P(e.currentTime), w = () => {
+      K(e.duration), F((R) => ({
+        ...R,
+        [_(a.id)]: E(e.duration)
       }));
-    }, z = () => {
-      e.src.includes(i.src) && (_ && e.paused && e.play().catch((O) => {
-        console.warn("Playback failed:", O);
-      }), y(!1));
+    }, J = () => {
+      e.src.includes(a.src) && (f && e.paused && e.play().catch((R) => {
+        console.warn("Playback failed:", R);
+      }), g(!1));
     };
-    return e.addEventListener("loadeddata", z), e.addEventListener("loadedmetadata", S), e.addEventListener("timeupdate", v), e.addEventListener("ended", n), e.addEventListener("error", l), () => {
-      e.removeEventListener("loadeddata", z), e.removeEventListener("loadedmetadata", S), e.removeEventListener("timeupdate", v), e.removeEventListener("ended", n), e.removeEventListener("error", l);
+    return e.addEventListener("loadeddata", J), e.addEventListener("loadedmetadata", w), e.addEventListener("timeupdate", p), e.addEventListener("ended", r), e.addEventListener("error", u), () => {
+      e.removeEventListener("loadeddata", J), e.removeEventListener("loadedmetadata", w), e.removeEventListener("timeupdate", p), e.removeEventListener("ended", r), e.removeEventListener("error", u);
     };
-  }, [i, b, o, _]), p(() => {
-    if (typeof window > "u") return;
-    if (!o.length) {
-      a.current?.pause(), sessionStorage.removeItem("currentSongId"), L(null), E(0), x(0), c(!1);
-      return;
-    }
-    o.forEach((n) => {
-      n?.src && De(n.src).then((l) => {
-        H((v) => ({
-          ...v,
-          [I(n.id)]: l
-        }));
-      });
-    });
-    const e = sessionStorage.getItem("currentSongId");
-    if (e) {
-      const n = o.find((l) => String(l.id) === e);
-      if (n) {
-        L(n);
+  }, [a, M, t, f]), h(() => {
+    if (!(typeof window > "u")) {
+      if (!t.length) {
+        s.current?.pause(), sessionStorage.removeItem("currentSongId");
         return;
       }
+      t.forEach((e) => {
+        e?.src && Xe(e.src).then((r) => {
+          F((u) => ({
+            ...u,
+            [_(e.id)]: r
+          }));
+        });
+      });
     }
-    L(o[0]);
-  }, [o]), p(() => {
+  }, [t]), h(() => {
     if (m)
-      return window.addEventListener("mousemove", T), window.addEventListener("mouseup", A), window.addEventListener("touchmove", X), window.addEventListener("touchend", $), () => {
-        window.removeEventListener("mousemove", T), window.removeEventListener("mouseup", A), window.removeEventListener("touchmove", X), window.removeEventListener("touchend", $);
+      return window.addEventListener("mousemove", B), window.addEventListener("mouseup", X), window.addEventListener("touchmove", z), window.addEventListener("touchend", O), () => {
+        window.removeEventListener("mousemove", B), window.removeEventListener("mouseup", X), window.removeEventListener("touchmove", z), window.removeEventListener("touchend", O);
       };
-  }, [T, A, $, X, m]), p(() => {
-    a.current && (a.current.volume = P);
-  }, [P]), p(() => {
-    const e = (n) => {
-      n.code === "Space" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "") && (n.preventDefault(), B());
+  }, [B, X, O, z, m]), h(() => {
+    s.current && (s.current.volume = k);
+  }, [k]), h(() => {
+    const e = (r) => {
+      r.code === "Space" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "") && (r.preventDefault(), I());
     };
     return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
-  }, [B]), p(() => {
-    const e = a.current;
+  }, [I]), h(() => {
+    const e = s.current;
     if (!e) return;
-    const n = () => c(!e.paused);
-    return e.addEventListener("play", n), e.addEventListener("pause", n), e.addEventListener("ended", n), () => {
-      e.removeEventListener("play", n), e.removeEventListener("pause", n), e.removeEventListener("ended", n);
+    const r = () => l(!e.paused);
+    return e.addEventListener("play", r), e.addEventListener("pause", r), e.addEventListener("ended", r), () => {
+      e.removeEventListener("play", r), e.removeEventListener("pause", r), e.removeEventListener("ended", r);
     };
-  }, []), /* @__PURE__ */ r(oe, { children: /* @__PURE__ */ u("div", { className: t.wrapper, children: [
-    /* @__PURE__ */ u("div", { className: t.current, children: [
-      /* @__PURE__ */ r("div", { className: t.imageWrapper, children: /* @__PURE__ */ r("div", { className: t.musicImage, children: i?.cover && /* @__PURE__ */ r(
+  }, []), /* @__PURE__ */ n(L, { children: /* @__PURE__ */ c("div", { className: o.wrapper, children: [
+    /* @__PURE__ */ c("div", { className: o.current, children: [
+      /* @__PURE__ */ n("div", { className: o.imageWrapper, children: /* @__PURE__ */ n("div", { className: o.musicImage, children: a?.cover && /* @__PURE__ */ n(
         "img",
         {
-          src: i.cover,
+          src: a.cover,
           alt: "Album cover art"
         }
       ) }) }),
-      /* @__PURE__ */ u("div", { className: t.currentControls, children: [
-        /* @__PURE__ */ u("div", { className: t.musicTitles, children: [
-          /* @__PURE__ */ r("div", { className: t.songName, children: i?.title || "" }),
-          /* @__PURE__ */ r("div", { className: t.artistName, children: i?.artist || "" })
+      /* @__PURE__ */ c("div", { className: o.currentControls, children: [
+        /* @__PURE__ */ c("div", { className: o.musicTitles, children: [
+          /* @__PURE__ */ n("div", { className: o.songName, children: a?.title || "" }),
+          /* @__PURE__ */ n("div", { className: o.artistName, children: a?.artist || "" })
         ] }),
-        /* @__PURE__ */ r("div", { className: t.spacer }),
-        /* @__PURE__ */ u("div", { className: t.time, children: [
-          /* @__PURE__ */ r("span", { className: t.currentTime, children: w(R) }),
-          /* @__PURE__ */ r("span", { className: t.finalTime, children: i && F[I(i.id)] || "" })
+        /* @__PURE__ */ n("div", { className: o.spacer }),
+        /* @__PURE__ */ c("div", { className: o.time, children: [
+          /* @__PURE__ */ n("span", { className: o.currentTime, children: E(a ? $ : 0) }),
+          /* @__PURE__ */ n("span", { className: o.finalTime, children: a && H[_(a.id)] || "" })
         ] }),
-        /* @__PURE__ */ u(
+        /* @__PURE__ */ c(
           "div",
           {
-            className: t.progressDetails,
-            ref: g,
-            onMouseDown: ee,
-            onTouchStart: ne,
-            onMouseMove: T,
-            onMouseLeave: te,
+            className: o.progressDetails,
+            ref: b,
+            onMouseDown: te,
+            onTouchStart: re,
+            onMouseMove: B,
+            onMouseLeave: oe,
             onClick: (e) => {
-              if (!a.current?.duration) return;
-              const n = e.currentTarget.getBoundingClientRect(), v = (e.clientX - n.left) / n.width * a.current.duration;
-              D(v);
+              if (!s.current?.duration) return;
+              const r = e.currentTarget.getBoundingClientRect(), p = (e.clientX - r.left) / r.width * s.current.duration;
+              A(p);
             },
             children: [
-              /* @__PURE__ */ r(
+              /* @__PURE__ */ n(
                 "div",
                 {
-                  className: t.progressBar,
-                  style: { width: Y + "%" },
-                  children: /* @__PURE__ */ r("span", {})
+                  className: o.progressBar,
+                  style: { width: ee + "%" },
+                  children: /* @__PURE__ */ n("span", {})
                 }
               ),
-              U !== null && (m || V !== null) && /* @__PURE__ */ r(
+              V !== null && (m || U !== null) && /* @__PURE__ */ n(
                 "div",
                 {
-                  className: t.progressTooltip,
-                  style: { left: V ?? 0 },
-                  children: U
+                  className: o.progressTooltip,
+                  style: { left: U ?? 0 },
+                  children: V
                 }
               )
             ]
           }
         ),
-        /* @__PURE__ */ u("div", { className: t.controlBtn, children: [
-          /* @__PURE__ */ u("div", { className: t.centeredButtons, children: [
-            /* @__PURE__ */ r(
+        /* @__PURE__ */ c("div", { className: o.controlBtn, children: [
+          /* @__PURE__ */ c("div", { className: o.centeredButtons, children: [
+            /* @__PURE__ */ n(
               "button",
               {
                 type: "button",
-                className: `${t.iconButton} material-icons-round`,
+                className: o.iconButton,
                 "aria-label": "Previous track",
-                onClick: re,
-                children: "skip_previous"
+                onClick: ae,
+                children: /* @__PURE__ */ n(S, { name: "prev" })
               }
             ),
-            /* @__PURE__ */ r("div", { className: t.playPause, children: /* @__PURE__ */ r(
+            /* @__PURE__ */ n("div", { className: o.playPause, children: /* @__PURE__ */ n(
               "button",
               {
                 type: "button",
-                className: `${t.iconButton} ${t.playPauseButton} material-icons-round`,
-                "aria-label": s ? "Pause" : "Play",
-                onClick: B,
-                children: Q
+                className: `${o.iconButton} ${o.playPauseButton}`,
+                "aria-label": i ? "Pause" : "Play",
+                onClick: I,
+                children: /* @__PURE__ */ n(S, { name: i ? "pause" : "play" })
               }
             ) }),
-            /* @__PURE__ */ r(
+            /* @__PURE__ */ n(
               "button",
               {
                 type: "button",
-                className: `${t.iconButton} material-icons-round`,
+                className: o.iconButton,
                 "aria-label": "Next track",
-                onClick: () => b(),
-                children: "skip_next"
+                onClick: () => M(),
+                children: /* @__PURE__ */ n(S, { name: "next" })
               }
             )
           ] }),
-          /* @__PURE__ */ u("div", { className: t.volumeContainer, children: [
-            /* @__PURE__ */ r(
+          /* @__PURE__ */ c("div", { className: o.volumeContainer, children: [
+            /* @__PURE__ */ n(
               "span",
               {
-                className: "material-icons-round",
+                className: o.volumeIcon,
                 id: "volume",
                 "aria-hidden": "true",
-                children: "volume_up"
+                children: /* @__PURE__ */ n(S, { name: "volume" })
               }
             ),
-            /* @__PURE__ */ r("div", { className: t.hoverArea }),
-            /* @__PURE__ */ r(
+            /* @__PURE__ */ n("div", { className: o.hoverArea }),
+            /* @__PURE__ */ n(
               "input",
               {
                 type: "range",
-                className: t.volumeSlider,
+                className: o.volumeSlider,
                 id: "volumeSlider",
                 min: "0",
                 max: "1",
                 step: "0.01",
-                value: P,
-                onChange: Z
+                value: k,
+                onChange: ne
               }
             )
           ] })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ r("div", { className: t.playlistScroll, children: /* @__PURE__ */ r("ul", { children: o.map((e) => /* @__PURE__ */ r("li", { children: /* @__PURE__ */ u(
+    /* @__PURE__ */ n("div", { className: o.playlistScroll, children: /* @__PURE__ */ n("ul", { children: t.map((e) => /* @__PURE__ */ n("li", { children: /* @__PURE__ */ c(
       "button",
       {
         type: "button",
-        className: t.playlistScrollItem,
+        className: o.playlistScrollItem,
         onClick: () => {
-          i && e.id === i.id ? B() : f(e, !0);
+          a && e.id === a.id ? I() : y(e, !0);
         },
-        "aria-label": `${i && e.id === i.id && s ? "Pause" : "Play"} ${e.title} by ${e.artist}`,
+        "aria-label": `${a && e.id === a.id && i ? "Pause" : "Play"} ${e.title} by ${e.artist}`,
         children: [
-          /* @__PURE__ */ u("div", { className: t.miniCover, children: [
-            e.cover && /* @__PURE__ */ r(
+          /* @__PURE__ */ c("div", { className: o.miniCover, children: [
+            e.cover && /* @__PURE__ */ n(
               "img",
               {
                 src: e.cover,
                 alt: `${e.title} cover`
               }
             ),
-            /* @__PURE__ */ r("div", { className: t.overlay }),
-            /* @__PURE__ */ r("span", { className: "material-icons-round " + t.playOverlay, children: "play_arrow" })
+            /* @__PURE__ */ n("div", { className: o.overlay }),
+            /* @__PURE__ */ n("span", { className: o.playOverlay, children: /* @__PURE__ */ n(S, { name: "play" }) })
           ] }),
-          /* @__PURE__ */ u("div", { className: t.playlistTextContainer, children: [
-            /* @__PURE__ */ r("span", { className: t.song, children: e.title }),
-            /* @__PURE__ */ r("span", { className: t.artist, children: e.artist })
+          /* @__PURE__ */ c("div", { className: o.playlistTextContainer, children: [
+            /* @__PURE__ */ n("span", { className: o.song, children: e.title }),
+            /* @__PURE__ */ n("span", { className: o.artist, children: e.artist })
           ] }),
-          /* @__PURE__ */ r("div", { className: t.spacer }),
-          /* @__PURE__ */ r("span", { className: t.playlistSongLength, children: F[I(e.id)] || "loading..." })
+          /* @__PURE__ */ n("div", { className: o.spacer }),
+          /* @__PURE__ */ n("span", { className: o.playlistSongLength, children: H[_(e.id)] || "loading..." })
         ]
       }
     ) }, e.id)) }) }),
-    /* @__PURE__ */ r(
+    /* @__PURE__ */ n(
       "audio",
       {
-        ref: a,
-        className: t.mainSong,
-        src: i?.src,
+        ref: s,
+        className: o.mainSong,
+        src: a?.src,
         preload: "auto"
       }
     )
   ] }) });
 }
-function De(o) {
-  return new Promise((s) => {
-    const c = new Audio(o);
-    function _() {
-      c.removeEventListener("loadedmetadata", y), c.removeEventListener("error", i), c.src = "";
+function Xe(t) {
+  return new Promise((i) => {
+    const l = new Audio(t);
+    function f() {
+      l.removeEventListener("loadedmetadata", g), l.removeEventListener("error", C), l.src = "";
     }
-    function y() {
-      s(w(c.duration)), _();
+    function g() {
+      i(E(l.duration)), f();
     }
-    function i() {
-      s("--:--"), _();
+    function C() {
+      i("--:--"), f();
     }
-    c.addEventListener("loadedmetadata", y), c.addEventListener("error", i);
+    l.addEventListener("loadedmetadata", g), l.addEventListener("error", C);
   });
 }
-function w(o) {
-  if (!Number.isFinite(o) || o < 0) return "0:00";
-  const s = Math.floor(o / 60);
-  let c = String(Math.floor(o % 60));
-  return c.length < 2 && (c = "0" + c), s + ":" + c;
+function E(t) {
+  if (!Number.isFinite(t) || t < 0) return "0:00";
+  const i = Math.floor(t / 60);
+  let l = String(Math.floor(t % 60));
+  return l.length < 2 && (l = "0" + l), i + ":" + l;
 }
-function I(o) {
-  return String(o);
+function ze(t, i) {
+  return t.length ? i === null ? t[0] : t.find((l) => _(l.id) === _(i)) ?? t[0] : null;
+}
+function _(t) {
+  return String(t);
+}
+function S({ name: t }) {
+  return /* @__PURE__ */ c(
+    "svg",
+    {
+      "aria-hidden": "true",
+      viewBox: "0 0 24 24",
+      focusable: "false",
+      children: [
+        t === "prev" && /* @__PURE__ */ c(L, { children: [
+          /* @__PURE__ */ n("path", { d: "M6 5h2v14H6z" }),
+          /* @__PURE__ */ n("path", { d: "m19 6-9 6 9 6z" })
+        ] }),
+        t === "next" && /* @__PURE__ */ c(L, { children: [
+          /* @__PURE__ */ n("path", { d: "M16 5h2v14h-2z" }),
+          /* @__PURE__ */ n("path", { d: "m5 6 9 6-9 6z" })
+        ] }),
+        t === "play" && /* @__PURE__ */ n("path", { d: "m8 5 11 7-11 7z" }),
+        t === "pause" && /* @__PURE__ */ c(L, { children: [
+          /* @__PURE__ */ n("path", { d: "M7 5h4v14H7z" }),
+          /* @__PURE__ */ n("path", { d: "M13 5h4v14h-4z" })
+        ] }),
+        t === "volume" && /* @__PURE__ */ c(L, { children: [
+          /* @__PURE__ */ n("path", { d: "M4 9v6h4l5 4V5L8 9z" }),
+          /* @__PURE__ */ n(
+            "path",
+            {
+              d: "M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12",
+              fill: "none",
+              stroke: "currentColor",
+              strokeLinecap: "round",
+              strokeWidth: "2"
+            }
+          )
+        ] })
+      ]
+    }
+  );
 }
 export {
   $e as AudioPlayer

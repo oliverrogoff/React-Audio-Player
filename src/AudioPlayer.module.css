@@ -1,12 +1,9 @@
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
 .wrapper {
     max-width: 600px;
     min-width: 250px;
     height: 100%;
     margin: auto;
-    font-family: 'Open Sans', sans-serif;
+    font-family: var(--audio-player-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
     font-weight: 370;
     line-height: 1.8;
     letter-spacing: 0.05rem;
@@ -42,8 +39,6 @@
 }
 
 .controlBtn span,
-.controlBtn .material-icons,
-.controlBtn .material-icons-round,
 .iconButton {
     cursor: pointer;
 }
@@ -173,8 +168,16 @@
     padding: 0;
     border: 0;
     background: transparent;
-    font-family: "Material Icons Round";
     line-height: 1;
+}
+
+.iconButton svg,
+.volumeIcon svg,
+.playOverlay svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+    fill: currentColor;
 }
 
 .controlBtn .playPauseButton {
@@ -192,6 +195,10 @@
 .volumeContainer span {
     margin: auto;
     font-size: 23px;
+}
+
+.volumeIcon {
+    color: #1E1D24;
 }
 
 .controlBtn .volumeSlider {
