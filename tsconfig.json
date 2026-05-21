@@ -5,7 +5,9 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "dist",
+    "tsBuildInfoFile": ".tsbuildinfo",
     "strict": true,
     "skipLibCheck": true
   },

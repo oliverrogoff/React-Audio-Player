@@ -1,16 +1,20 @@
 {
   "name": "audio-player",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./dist/audio-player.css": "./dist/audio-player.css"
   },
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"

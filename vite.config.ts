@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) =>({
   publicDir: mode === 'development' ? 'public' : false,  // Public in dev, disabled in build
   plugins: [react()],
   build: {
+    emptyOutDir: false,
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'AudioPlayer',

@@ -22,8 +22,8 @@ npm install git@github.com:oliverrogoff/React-Audio-Player.git
 ## Usage
 
 ```jsx
-import { AudioPlayer } from 'react-audio-player';
-import "./dist/audio-player.css"
+import { AudioPlayer } from 'audio-player';
+import 'audio-player/dist/audio-player.css';
 
 const playlist = [
   {
@@ -43,7 +43,7 @@ const playlist = [
 ];
 
 function App() {
-  return <AudioPlayer playlist={playlist} client:load />;
+  return <AudioPlayer playlist={playlist} />;
 }
 ```
 
@@ -57,7 +57,7 @@ function App() {
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `id` | `string` | yes | Unique identifier |
+| `id` | `string \| number` | yes | Unique identifier |
 | `title` | `string` | yes | Track title |
 | `artist` | `string` | yes | Artist name |
 | `src` | `string` | yes | Audio file URL |

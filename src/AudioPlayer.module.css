@@ -43,7 +43,8 @@
 
 .controlBtn span,
 .controlBtn .material-icons,
-.controlBtn .material-icons-round {
+.controlBtn .material-icons-round,
+.iconButton {
     cursor: pointer;
 }
 
@@ -156,7 +157,8 @@
     justify-content: space-between;
 }
 
-.controlBtn span {
+.controlBtn span,
+.iconButton {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -167,7 +169,15 @@
     font-size: 30px;
 }
 
-.controlBtn .playPause span {
+.iconButton {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: "Material Icons Round";
+    line-height: 1;
+}
+
+.controlBtn .playPauseButton {
     font-size: 45px;
 }
 
@@ -235,11 +245,19 @@
     margin: 0;
 }
 
+.playlistScroll li {
+    list-style: none;
+}
+
 .playlistScrollItem {
     display: flex;
+    width: 100%;
     padding: 0 0 13px 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
-    list-style: none;
+    font: inherit;
+    text-align: left;
 }
 
 .miniCover {
