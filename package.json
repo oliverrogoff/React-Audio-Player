@@ -2,6 +2,10 @@
   "name": "audio-player",
   "version": "0.1.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oliverrogoff/React-Audio-Player.git"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
